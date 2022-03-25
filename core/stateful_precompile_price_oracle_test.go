@@ -89,20 +89,20 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 
 	btcAvaxVal := big.NewInt(10000)
 
-	input, err := precompile.PackSetPriceInput(big.NewInt(0).Bytes(), btcAvaxVal)
+	// input, err := precompile.PackSetPriceInput(big.NewInt(0).Bytes(), btcAvaxVal)
 
-	if err != nil {
-		t.Fatal(err)
-	}
+	// if err != nil {
+	// 	t.Fatal(err)
+	// }
 
-	_, _, err = contract.Run(testPreCompileAccessibleState, common.Address{}, precompile.PriceOracleAddress, input, 50000, false)
+	// _, _, err = contract.Run(testPreCompileAccessibleState, common.Address{}, precompile.PriceOracleAddress, input, 50000, false)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Now should be able to pull the price out
-	input, err = precompile.PackGetPriceInput(big.NewInt(0))
+	input, err := precompile.PackGetPriceInput(big.NewInt(0))
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -198,6 +198,9 @@ func (self *DummyEngine) VerifyHeader(chain consensus.ChainHeaderReader, header 
 	if parent == nil {
 		return consensus.ErrUnknownAncestor
 	}
+
+	// TODO put in checks for validity fo data feed in the header
+	
 	// Sanity checks passed, do a proper verification
 	return self.verifyHeader(chain, header, parent, false)
 }
