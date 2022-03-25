@@ -427,7 +427,7 @@ func (lc *localNetwork) createSubnet() error {
 	cli := lc.apiClis[name]
 	subnetTxID, err := cli.PChainAPI().CreateSubnet(
 		userPass,
-		[]string{lc.pchainFundedAddr}, // from
+		[]string{lc.pchainFundedAddr}, // fromg
 		lc.pchainFundedAddr,           // changeAddr
 		[]string{lc.pchainFundedAddr}, // controlKeys
 		1,                             // threshold

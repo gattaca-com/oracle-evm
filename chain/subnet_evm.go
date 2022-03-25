@@ -18,6 +18,8 @@ import (
 	"github.com/ava-labs/subnet-evm/rpc"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
+	
+
 )
 
 type (
@@ -33,6 +35,7 @@ type ETHChain struct {
 // NewETHChain creates an Ethereum blockchain with the given configs.
 func NewETHChain(config *eth.Config, nodecfg *node.Config, chainDB ethdb.Database, settings eth.Settings, lastAcceptedHash common.Hash, clock *mockable.Clock) (*ETHChain, error) {
 	node, err := node.New(nodecfg)
+
 	if err != nil {
 		return nil, err
 	}
@@ -47,6 +50,7 @@ func NewETHChain(config *eth.Config, nodecfg *node.Config, chainDB ethdb.Databas
 	} else {
 		backend.SetEtherbase(config.Miner.Etherbase)
 	}
+
 	return chain, nil
 }
 
@@ -132,11 +136,15 @@ func (self *ETHChain) SetPreference(block *types.Block) error {
 // this function may trigger a reorg if the block being accepted is not in the
 // canonical chain.
 func (self *ETHChain) Accept(block *types.Block) error {
+	// GATTACA TODO do price data intgrity checks
+	
 	return self.BlockChain().Accept(block)
 }
 
 // Reject tells the chain that [block] has been rejected.
 func (self *ETHChain) Reject(block *types.Block) error {
+	// GATTACA TODO do price data intgrity checks
+
 	return self.BlockChain().Reject(block)
 }
 

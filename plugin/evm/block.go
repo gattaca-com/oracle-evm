@@ -15,6 +15,8 @@ import (
 
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/snow/choices"
+
+	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
 // Block implements the snowman.Block interface
@@ -23,6 +25,7 @@ type Block struct {
 	ethBlock *types.Block
 	vm       *VM
 	status   choices.Status
+	prices  []*streamer.Price
 }
 
 // ID implements the snowman.Block interface
