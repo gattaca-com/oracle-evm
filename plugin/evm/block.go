@@ -15,8 +15,6 @@ import (
 
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/snow/choices"
-
-	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
 // Block implements the snowman.Block interface
@@ -25,7 +23,6 @@ type Block struct {
 	ethBlock *types.Block
 	vm       *VM
 	status   choices.Status
-	prices  []*streamer.Price
 }
 
 // ID implements the snowman.Block interface
@@ -92,6 +89,31 @@ func (b *Block) syntacticVerify() error {
 	header := b.ethBlock.Header()
 	rules := b.vm.chainConfig.AvalancheRules(header.Number, new(big.Int).SetUint64(header.Time))
 	return b.vm.getBlockValidator(rules).SyntacticVerify(b)
+}
+
+// GATTACA MOD - verify block oracle prices are correct
+func (b *Block) verifyPrices() error {
+	if b == nil || b.ethBlock == nil {
+		return errInvalidBlock
+	}
+
+	blockPrices := b.ethBlock.GetPrices()
+
+	if blockPrices != nil {
+		
+		for _, price := range blockPrices {
+			if ! b.vm.PythStreamer.IsValidPrice(price) {
+				return fmt.Errorf("Block contains invalid price %s", price.Symbol )
+			}
+		}	 
+
+	} else {
+		return fmt.Errorf("Block doesn not contain any prices")
+	}
+	
+
+	return nil
+
 }
 
 // Verify implements the snowman.Block interface
