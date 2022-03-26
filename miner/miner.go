@@ -62,8 +62,8 @@ func (miner *Miner) SetEtherbase(addr common.Address) {
 	miner.worker.setEtherbase(addr)
 }
 
-func (miner *Miner) GenerateBlock() (*types.Block, error) {
-	return miner.worker.commitNewWork()
+func (miner *Miner) GenerateBlock(oraclePrices []byte) (*types.Block, error) {
+	return miner.worker.commitNewWork(oraclePrices)
 }
 
 // SubscribePendingLogs starts delivering logs from pending transactions

@@ -86,7 +86,7 @@ func (p *StateProcessor) Process(block *types.Block, parent *types.Header, state
 	for _, price := range prices {
 
 		//TODO
-		fmt.Printf("Write this price to the state db: %s", price.Symbol)
+		fmt.Printf("Write this price to the state db: '%s'\n", price.Symbol)
 		precompile.WritePriceToState(statedb, price)
 	}
 

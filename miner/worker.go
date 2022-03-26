@@ -106,7 +106,7 @@ func (w *worker) setEtherbase(addr common.Address) {
 }
 
 // commitNewWork generates several new sealing tasks based on the parent block.
-func (w *worker) commitNewWork() (*types.Block, error) {
+func (w *worker) commitNewWork(oraclePrices []byte) (*types.Block, error) {
 	w.mu.RLock()
 	defer w.mu.RUnlock()
 
@@ -138,6 +138,7 @@ func (w *worker) commitNewWork() (*types.Block, error) {
 		GasLimit:   gasLimit,
 		Extra:      nil,
 		Time:       uint64(timestamp),
+		Prices: oraclePrices,
 	}
 
 	bigTimestamp := big.NewInt(timestamp)

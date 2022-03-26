@@ -436,14 +436,18 @@ func (vm *VM) Shutdown() error {
 
 // buildBlock builds a block to be wrapped by ChainState
 func (vm *VM) buildBlock() (snowman.Block, error) {
-	block, err := vm.chain.GenerateBlock()
+	
+	// GATTACA MOD Get latest prices and write to block
+	oraclePrices, err := vm.PythStreamer.GetPricesBytes()
+
+	block, err := vm.chain.GenerateBlock(oraclePrices)
 	vm.builder.handleGenerateBlock()
 	if err != nil {
 		return nil, err
 	}
 
-	// GATTACA MOD Get latest prices and write to block
-	block.SetPrices(vm.PythStreamer.GetPrices())
+	
+	
 
 	// Note: the status of block is set by ChainState
 	blk := &Block{

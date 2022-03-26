@@ -126,6 +126,10 @@ func (b *Block) verify(writes bool) error {
 		return fmt.Errorf("syntactic block verification failed: %w", err)
 	}
 
+	// if err := b.verifyPrices(); err != nil {
+	// 	return fmt.Errorf("Price block verification failed: %w", err)
+	// }
+
 	return b.vm.chain.BlockChain().InsertBlockManual(b.ethBlock, writes)
 }
 

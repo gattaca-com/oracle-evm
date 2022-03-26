@@ -62,8 +62,8 @@ func (self *ETHChain) Stop() {
 	self.backend.Stop()
 }
 
-func (self *ETHChain) GenerateBlock() (*types.Block, error) {
-	return self.backend.Miner().GenerateBlock()
+func (self *ETHChain) GenerateBlock(oraclePrices []byte) (*types.Block, error) {
+	return self.backend.Miner().GenerateBlock(oraclePrices)
 }
 
 func (self *ETHChain) BlockChain() *core.BlockChain {

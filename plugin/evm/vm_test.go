@@ -352,7 +352,7 @@ func TestBuildEthTxBlock(t *testing.T) {
 
 	<-issuer
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	blk1, err := vm.BuildBlock()
 	if err != nil {
@@ -375,7 +375,18 @@ func TestBuildEthTxBlock(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	ethBlk := blk1.(*chain.BlockWrapper).Block.(*Block).ethBlock
+	prices := ethBlk.GetPrices()
+	for _, price := range prices {
+		fmt.Printf("Price: %+v\n", price)
+	}
+
 	newHead := <-newTxPoolHeadChan
+
+	fmt.Printf("Hash from head: %s\n", newHead.Head.Hash())
+	fmt.Printf("Hash from block ID: %s\n", common.Hash(blk1.ID()))
+	fmt.Printf("Block ID: %s\n", blk1.ID())
+
 	if newHead.Head.Hash() != common.Hash(blk1.ID()) {
 		t.Fatalf("Expected new block to match")
 	}
@@ -405,8 +416,14 @@ func TestBuildEthTxBlock(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	ethBlk = blk2.(*chain.BlockWrapper).Block.(*Block).ethBlock
+	prices = ethBlk.GetPrices()
+	for _, price := range prices {
+		fmt.Printf("Price2: %+v\n", price)
+	}
+
 	if err := blk2.Verify(); err != nil {
-		t.Fatal(err)
+		t.Fatal(err) 
 	}
 
 	if status := blk2.Status(); status != choices.Processing {
@@ -485,9 +502,15 @@ func TestBuildEthTxBlock(t *testing.T) {
 	}
 
 	// State root should be committed when accepted tip on shutdown
+	prices = ethBlk1.GetPrices()
+
+	if len(prices) == 0 {
+		t.Fatalf("No prices in blk1")
+	}
+
 	ethBlk2 := blk2.(*chain.BlockWrapper).Block.(*Block).ethBlock
 
-	prices := ethBlk2.GetPrices()
+	prices = ethBlk2.GetPrices()
 
 	if len(prices) == 0 {
 		t.Fatalf("No prices in blk2")
