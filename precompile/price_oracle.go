@@ -4,13 +4,17 @@
 package precompile
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"math/big"
 
 	"github.com/ava-labs/subnet-evm/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattca/oracle-price-streamer/streamer"
 )
+
+type PriceFeedId common.Hash
 
 var (
 	_ StatefulPrecompileConfig = &PriceOracleConfig{}
@@ -18,7 +22,7 @@ var (
 	PriceOraclePreCompile StatefulPrecompiledContract = CreateNativeGetPriceerPrecompile(PriceOracleAddress)
 
 	// TODO perhaps put in a method to
-	getPriceSignature = CalculateFunctionSelector("getPrice(uint256)") // Hashed value of key (e.g. keccak256(btc/eth)) )
+	getPriceSignature = CalculateFunctionSelector("getPrice(uint256)")         // Hashed value of key (e.g. keccak256(btc/eth)) )
 	setPriceSignature = CalculateFunctionSelector("setPrice(uint256,uint256)") // identitifer/key, new price price
 
 	ErrCannotGetPrice = errors.New("non-enabled cannot GetPrice")
@@ -27,10 +31,23 @@ var (
 	SetPriceInputLen = common.HashLength + common.HashLength
 )
 
+var (
+	AVAX_USD = PriceFeedId(common.BigToHash(big.NewInt(0)))
+)
+
+var SymbolToFeedId = map[string]PriceFeedId{
+	"AVAX/USD": AVAX_USD,
+}
+
+func BytesToPriceFeedId(b []byte) PriceFeedId {
+	return PriceFeedId(common.BytesToHash(b))
+}
+
 // PriceOracleConfig wraps [AllowListConfig] and uses it to implement the StatefulPrecompileConfig
 // interface while adding in the contract deployer specific precompile address.
 type PriceOracleConfig struct {
-	AllowListConfig
+	BlockTimestamp  *big.Int         `json:"blockTimestamp"`
+	AllowListAdmins []common.Address `json:"adminAddresses"`
 }
 
 // Address returns the address of the native GetPriceer contract.
@@ -40,7 +57,13 @@ func (c *PriceOracleConfig) Address() common.Address {
 
 // Configure configures [state] with the desired admins based on [c].
 func (c *PriceOracleConfig) Configure(state StateDB) {
-	c.AllowListConfig.Configure(state, PriceOracleAddress)
+	// DO configuration things in here
+	// TODO
+	if !state.Exist(c.Address()) {
+		state.CreateAccount(c.Address())
+	}
+
+	state.SetState(c.Address(), common.BigToHash(big.NewInt(0)), common.BigToHash(big.NewInt(10000)))
 }
 
 // Contract returns the singleton stateful precompiled contract to be used for the native GetPriceer.
@@ -48,16 +71,68 @@ func (c *PriceOracleConfig) Contract() StatefulPrecompiledContract {
 	return PriceOraclePreCompile
 }
 
-// GetPriceOracleStatus returns the role of [address] for the GetPriceer list.
-func GetPriceOracleStatus(stateDB StateDB, address common.Address) AllowListRole {
-	return getAllowListStatus(stateDB, PriceOracleAddress, address)
+// Contract returns the singleton stateful precompiled contract to be used for the native GetPriceer.
+func (c *PriceOracleConfig) Timestamp() *big.Int {
+	return big.NewInt(0)
+	// return big.NewInt(time.Now().AddDate(-1, 0, 0).UnixMilli())
+	// return c.BlockTimestamp
 }
 
-// SetPriceOracleStatus sets the permissions of [address] to [role] for the
-// GetPriceer list. assumes [role] has already been verified as valid.
-func SetPriceOracleStatus(stateDB StateDB, address common.Address, role AllowListRole) {
-	setAllowListRole(stateDB, PriceOracleAddress, address, role)
+// TODO PRETTIFY
+func MarshallPrice(price *streamer.Price) ([]byte, error) {
+	var toHash [32]byte
+
+	binary.LittleEndian.PutUint64(toHash[:8], uint64(price.Price))
+	binary.LittleEndian.PutUint64(toHash[8:8+8], uint64(price.Slot))
+	binary.LittleEndian.PutUint16(toHash[8+8:8+8+2], uint16(price.Decimals))
+
+	copy(toHash[8+8+2:], []byte(price.Symbol))
+
+	return toHash[:], nil
 }
+
+func PriceToHash(price *streamer.Price) common.Hash {
+	b, err := MarshallPrice(price)
+	if err != nil {
+		// gattaca TODO is this a good idea?
+		return common.Hash{}
+	}
+
+	return common.BytesToHash(b)
+}
+
+func UnmarshallPrice(data []byte) (*streamer.Price, error) {
+
+	priceVal := binary.LittleEndian.Uint64(data[:8])
+	slotVal := binary.LittleEndian.Uint64(data[8 : 8+8])
+	decimalVal := binary.LittleEndian.Uint16(data[8+8 : 8+8+2])
+	symbol := string(data[8+8+2:])
+
+	price := streamer.Price{
+		Price:    int64(priceVal),
+		Slot:     slotVal,
+		Symbol:   symbol,
+		Decimals: uint(decimalVal),
+	}
+
+	return &price, nil
+}
+
+func WritePriceToState(state StateDB, price *streamer.Price) {
+
+	if !state.Exist(PriceOracleAddress) {
+		state.CreateAccount(PriceOracleAddress)
+	}
+
+	if priceFeedId, ok := SymbolToFeedId[price.Symbol]; ok {
+		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), PriceToHash(price))
+	}
+}
+
+/*
+*
+* Get Price Functionality Below
+ */
 
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
 func PackGetPriceInput(identifier *big.Int) ([]byte, error) {
@@ -81,14 +156,14 @@ func UnpackGetPriceInput(input []byte) (*big.Int, error) {
 
 // createGetPriceNativeCoin checks if the caller is permissioned for GetPriceing operation.
 // The execution function parses the [input] into native coin amount and receiver address.
-func createGetPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
+func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
 	if remainingGas, err = deductGas(suppliedGas, GetPriceGasCost); err != nil {
 		return nil, 0, err
 	}
 
-	// if readOnly {
-	// 	return nil, remainingGas, vmerrs.ErrWriteProtection
-	// }
+	if readOnly {
+		return nil, remainingGas, vmerrs.ErrWriteProtection
+	}
 
 	identifier, err := UnpackGetPriceInput(input)
 	if err != nil {
@@ -96,11 +171,6 @@ func createGetPrice(accessibleState PrecompileAccessibleState, caller common.Add
 	}
 
 	stateDB := accessibleState.GetStateDB()
-	// Verify that the caller is in the allow list and therefore has the right to modify it
-	// callerStatus := getAllowListStatus(stateDB, PriceOracleAddress, caller)
-	// if !callerStatus.IsEnabled() {
-	// 	return nil, remainingGas, fmt.Errorf("%w: %s", ErrCannotGetPrice, caller)
-	// }
 
 	// if there is no address in the state, create one.
 	if !stateDB.Exist(addr) {
@@ -112,30 +182,48 @@ func createGetPrice(accessibleState PrecompileAccessibleState, caller common.Add
 	return price.Bytes(), remainingGas, nil
 }
 
+/*
+*
+* Set Price Functionality Below
+ */
 
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
-func PackSetPriceInput(identifier []byte, amount *big.Int) ([]byte, error) {
+func PackSetPriceInput(identifier *big.Int, price *streamer.Price) ([]byte, error) {
+	priceByte, err := MarshallPrice(price)
+	if err != nil {
+		return nil, err
+	}
+
+	priceLength := len(priceByte)
+
+	if priceLength > 32 {
+		return nil, fmt.Errorf("error Packing price. lenght of full price was larger than 32 bytes!. Total Lenth: %d", priceLength)
+	}
+
 	// function selector (4 bytes) + input(hash for address + hash for amount)
 	fullLen := selectorLen + SetPriceInputLen
 	input := make([]byte, fullLen)
 	copy(input[:selectorLen], setPriceSignature)
-	copy(input[selectorLen:selectorLen+common.HashLength], identifier)
-	amount.FillBytes(input[fullLen-common.HashLength: fullLen])
+	copy(input[selectorLen:selectorLen+common.HashLength], identifier.Bytes())
+	copy(input[fullLen-common.HashLength:], priceByte)
 	return input, nil
 }
 
-func UnpackSetPriceInput(input []byte) (common.Hash, *big.Int, error) {
+func UnpackSetPriceInput(input []byte) (*PriceFeedId, *streamer.Price, error) {
 	if len(input) != SetPriceInputLen {
-		return common.Hash{}, nil, fmt.Errorf("invalid input length for SetPrice: %d", len(input))
+		return nil, nil, fmt.Errorf("invalid input length for SetPrice: %d", len(input))
 	}
-	identifier := common.BytesToHash(input[:common.HashLength])
-	assetAmount := new(big.Int).SetBytes(input[common.HashLength : common.HashLength+common.HashLength])
-	return identifier, assetAmount, nil
+	identifier := BytesToPriceFeedId(input[:common.HashLength])
+	price, err := UnmarshallPrice(input[common.HashLength : common.HashLength+common.HashLength])
+	if err != nil {
+		return nil, nil, err
+	}
+	return &identifier, price, nil
 }
 
 // SetPrice modifies the value set for that price, and sets it to a particular value
 // The execution function parses the [input] into native coin amount and receiver address.
-func createSetPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
+func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
 	if remainingGas, err = deductGas(suppliedGas, SetPriceGasCost); err != nil {
 		return nil, 0, err
 	}
@@ -144,39 +232,25 @@ func createSetPrice(accessibleState PrecompileAccessibleState, caller common.Add
 		return nil, remainingGas, vmerrs.ErrWriteProtection
 	}
 
-	to, amount, err := UnpackSetPriceInput(input)
+	_, price, err := UnpackSetPriceInput(input)
 	if err != nil {
 		return nil, remainingGas, err
 	}
 
 	stateDB := accessibleState.GetStateDB()
-	// Verify that the caller is in the allow list and therefore has the right to modify it
-	// callerStatus := getAllowListStatus(stateDB, PriceOracleAddress, caller)
-	// if !callerStatus.IsEnabled() {
-	// 	return nil, remainingGas, fmt.Errorf("%w: %s", ErrCannotGetPrice, caller)
-	// }
 
-	// if there is no address in the state, create one.
-	if !stateDB.Exist(addr) {
-		stateDB.CreateAccount(addr)
-	}
+	WritePriceToState(stateDB, price)
 
-	stateDB.SetState(addr, to, common.BigToHash(amount))
 	// Return an empty output and the remaining gas
 	return []byte{}, remainingGas, nil
 }
 
 // createNativeGetPriceerPrecompile returns a StatefulPrecompiledContract with R/W control of an allow list at [precompileAddr] and a native coin GetPriceer.
 func CreateNativeGetPriceerPrecompile(precompileAddr common.Address) StatefulPrecompiledContract {
-	setAdmin := newStatefulPrecompileFunction(setAdminSignature, createAllowListRoleSetter(precompileAddr, AllowListAdmin))
-	setEnabled := newStatefulPrecompileFunction(setEnabledSignature, createAllowListRoleSetter(precompileAddr, AllowListEnabled))
-	setNone := newStatefulPrecompileFunction(setNoneSignature, createAllowListRoleSetter(precompileAddr, AllowListNoRole))
-	read := newStatefulPrecompileFunction(readAllowListSignature, createReadAllowList(precompileAddr))
-
-	GetPrice := newStatefulPrecompileFunction(getPriceSignature, createGetPrice)
-	SetPrice := newStatefulPrecompileFunction(setPriceSignature, createSetPrice)
+	GetPrice := newStatefulPrecompileFunction(getPriceSignature, getPrice)
+	SetPrice := newStatefulPrecompileFunction(setPriceSignature, setPrice)
 
 	// Construct the contract with no fallback function.
-	contract := newStatefulPrecompileWithFunctionSelectors(nil, []*statefulPrecompileFunction{setAdmin, setEnabled, setNone, read, GetPrice, SetPrice})
+	contract := newStatefulPrecompileWithFunctionSelectors(nil, []*statefulPrecompileFunction{GetPrice, SetPrice})
 	return contract
 }

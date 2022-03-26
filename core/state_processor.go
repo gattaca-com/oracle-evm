@@ -35,6 +35,7 @@ import (
 	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ava-labs/subnet-evm/core/vm"
 	"github.com/ava-labs/subnet-evm/params"
+	"github.com/ava-labs/subnet-evm/precompile"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -86,6 +87,7 @@ func (p *StateProcessor) Process(block *types.Block, parent *types.Header, state
 
 		//TODO
 		fmt.Printf("Write this price to the state db: %s", price.Symbol)
+		precompile.WritePriceToState(statedb, price)
 	}
 
 	blockContext := NewEVMBlockContext(header, p.bc, nil)
