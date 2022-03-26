@@ -12,68 +12,12 @@ import (
 	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
-type TestStateDb struct {
-	mockstate map[common.Address]map[common.Hash]common.Hash
-}
-
-func NewTestStateDb() *TestStateDb {
-	return &TestStateDb{mockstate: make(map[common.Address]map[common.Hash]common.Hash)}
-}
-
-func (tdb *TestStateDb) GetState(stateAddr common.Address, accessor common.Hash) common.Hash {
-	if addressState, ok := tdb.mockstate[stateAddr]; ok {
-		if state, ok := addressState[accessor]; ok {
-			return state
-		}
-	}
-	return common.Hash{}
-}
-
-func (tdb *TestStateDb) SetState(stateAddr common.Address, accessor common.Hash, value common.Hash) {
-	if addressState, ok := tdb.mockstate[stateAddr]; ok {
-		addressState[accessor] = value
-	}
-}
-
-func (tdb *TestStateDb) SetCode(common.Address, []byte) {
-	panic("Not implemented")
-}
-
-func (tdb *TestStateDb) SetNonce(common.Address, uint64) {
-	panic("Not implemented")
-}
-func (tdb *TestStateDb) GetNonce(common.Address) uint64 {
-	panic("Not implemented")
-}
-
-func (tdb *TestStateDb) GetBalance(common.Address) *big.Int {
-	panic("Not implemented")
-	// return big.NewInt(0)
-}
-func (tdb *TestStateDb) AddBalance(common.Address, *big.Int) {
-	panic("Not implemented")
-}
-func (tdb *TestStateDb) SubBalance(common.Address, *big.Int) {
-	panic("Not implemented")
-}
-
-func (tdb *TestStateDb) CreateAccount(account common.Address) {
-	if _, ok := tdb.mockstate[account]; !ok {
-		tdb.mockstate[account] = make(map[common.Hash]common.Hash)
-	}
-}
-
-func (tdb *TestStateDb) Exist(account common.Address) bool {
-	_, ok := tdb.mockstate[account]
-	return ok
-}
-
 type TestPrecompileAccessibleState struct {
-	tdb precompile.StateDB
+	db precompile.StateDB
 }
 
 func (t TestPrecompileAccessibleState) GetStateDB() precompile.StateDB {
-	return t.tdb
+	return t.db
 }
 
 func (t TestPrecompileAccessibleState) BlockTime() *big.Int {

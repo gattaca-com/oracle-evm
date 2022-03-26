@@ -442,15 +442,14 @@ func (vm *VM) buildBlock() (snowman.Block, error) {
 		return nil, err
 	}
 
-	// Get latest prices (only avax for now)
-	prices := vm.PythStreamer.GetPrices()
+	// GATTACA MOD Get latest prices and write to block
+	block.SetPrices(vm.PythStreamer.GetPrices())
 
 	// Note: the status of block is set by ChainState
 	blk := &Block{
 		id:       ids.ID(block.Hash()),
 		ethBlock: block,
 		vm:       vm,
-		prices: prices,
 	}
 
 	// Verify is called on a non-wrapped block here, such that this

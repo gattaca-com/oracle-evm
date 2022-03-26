@@ -35,6 +35,7 @@ import (
 	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ava-labs/subnet-evm/core/vm"
 	"github.com/ava-labs/subnet-evm/params"
+	"github.com/ava-labs/subnet-evm/precompile"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
@@ -80,7 +81,14 @@ func (p *StateProcessor) Process(block *types.Block, parent *types.Header, state
 	// Configure any stateful precompiles that should go into effect during this block.
 	p.config.CheckConfigurePrecompiles(new(big.Int).SetUint64(parent.Time), timestamp, statedb)
 
-	// TODO GATTACA Run statefulPrecompile to write price data
+	// GATTACA MOD - write prices from block header to stateDB
+	prices := block.GetPrices()
+	for _, price := range prices {
+
+		//TODO
+		fmt.Printf("Write this price to the state db: %s", price.Symbol)
+		precompile.WritePriceToState(statedb, price)
+	}
 
 	blockContext := NewEVMBlockContext(header, p.bc, nil)
 	vmenv := vm.NewEVM(blockContext, vm.TxContext{}, statedb, p.config, cfg)

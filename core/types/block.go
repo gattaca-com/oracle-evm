@@ -37,6 +37,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
+
+	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
 var (
@@ -97,6 +99,8 @@ type Header struct {
 	// BlockGasCost was added by SubnetEVM and is ignored in legacy
 	// headers.
 	BlockGasCost *big.Int `json:"blockGasCost" rlp:"optional"`
+
+	Prices  []*streamer.Price
 }
 
 // field type overrides for gencodec
@@ -367,5 +371,14 @@ func (b *Block) Hash() common.Hash {
 	b.hash.Store(v)
 	return v
 }
+
+func (b *Block) SetPrices(prices  []*streamer.Price) {
+	b.header.Prices = prices
+}
+
+func (b *Block) GetPrices() []*streamer.Price{
+	return b.header.Prices
+}
+
 
 type Blocks []*Block

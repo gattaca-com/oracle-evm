@@ -14,6 +14,8 @@ import (
 	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
+type PriceFeedId common.Hash
+
 var (
 	_ StatefulPrecompileConfig = &PriceOracleConfig{}
 	// Singleton StatefulPrecompiledContract for GetPriceing native assets by permissioned callers.
@@ -28,6 +30,18 @@ var (
 	GetPriceInputLen = common.HashLength
 	SetPriceInputLen = common.HashLength + common.HashLength
 )
+
+var (
+	AVAX_USD = PriceFeedId(common.BigToHash(big.NewInt(0)))
+)
+
+var SymbolToFeedId = map[string]PriceFeedId{
+	"AVAX/USD": AVAX_USD,
+}
+
+func BytesToPriceFeedId(b []byte) PriceFeedId {
+	return PriceFeedId(common.BytesToHash(b))
+}
 
 // PriceOracleConfig wraps [AllowListConfig] and uses it to implement the StatefulPrecompileConfig
 // interface while adding in the contract deployer specific precompile address.
@@ -91,9 +105,9 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 		return nil, 0, err
 	}
 
-	// if readOnly {
-	// 	return nil, remainingGas, vmerrs.ErrWriteProtection
-	// }
+	if readOnly {
+		return nil, remainingGas, vmerrs.ErrWriteProtection
+	}
 
 	identifier, err := UnpackGetPriceInput(input)
 	if err != nil {
@@ -101,11 +115,6 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 	}
 
 	stateDB := accessibleState.GetStateDB()
-	// Verify that the caller is in the allow list and therefore has the right to modify it
-	// callerStatus := getAllowListStatus(stateDB, PriceOracleAddress, caller)
-	// if !callerStatus.IsEnabled() {
-	// 	return nil, remainingGas, fmt.Errorf("%w: %s", ErrCannotGetPrice, caller)
-	// }
 
 	// if there is no address in the state, create one.
 	if !stateDB.Exist(addr) {
@@ -133,6 +142,7 @@ func MarshallPrice(price *streamer.Price) ([]byte, error) {
 func PriceToHash(price *streamer.Price) common.Hash {
 	b, err := MarshallPrice(price)
 	if err != nil {
+		// gattaca TODO is this a good idea?
 		return common.Hash{}
 	}
 
@@ -178,16 +188,27 @@ func PackSetPriceInput(identifier *big.Int, price *streamer.Price) ([]byte, erro
 	return input, nil
 }
 
-func UnpackSetPriceInput(input []byte) (*big.Int, *streamer.Price, error) {
+func UnpackSetPriceInput(input []byte) (*PriceFeedId, *streamer.Price, error) {
 	if len(input) != SetPriceInputLen {
 		return nil, nil, fmt.Errorf("invalid input length for SetPrice: %d", len(input))
 	}
-	identifier := new(big.Int).SetBytes(input[:common.HashLength])
+	identifier := BytesToPriceFeedId(input[:common.HashLength])
 	price, err := UnmarshallPrice(input[common.HashLength : common.HashLength+common.HashLength])
 	if err != nil {
 		return nil, nil, err
 	}
-	return identifier, price, nil
+	return &identifier, price, nil
+}
+
+func WritePriceToState(state StateDB, price *streamer.Price) {
+
+	if !state.Exist(PriceOracleAddress) {
+		state.CreateAccount(PriceOracleAddress)
+	}
+
+	if priceFeedId, ok := SymbolToFeedId[price.Symbol]; ok {
+		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), PriceToHash(price))
+	}
 }
 
 // SetPrice modifies the value set for that price, and sets it to a particular value
@@ -201,7 +222,7 @@ func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 		return nil, remainingGas, vmerrs.ErrWriteProtection
 	}
 
-	to, amount, err := UnpackSetPriceInput(input)
+	_, price, err := UnpackSetPriceInput(input)
 	if err != nil {
 		return nil, remainingGas, err
 	}
@@ -214,11 +235,7 @@ func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 	// }
 
 	// if there is no address in the state, create one.
-	if !stateDB.Exist(addr) {
-		stateDB.CreateAccount(addr)
-	}
-
-	stateDB.SetState(addr, common.BigToHash(to), PriceToHash(amount))
+	WritePriceToState(stateDB, price)
 	// Return an empty output and the remaining gas
 	return []byte{}, remainingGas, nil
 }
