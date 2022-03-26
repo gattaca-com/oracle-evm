@@ -7,14 +7,10 @@ import "github.com/ethereum/go-ethereum/common"
 
 // Gas costs for stateful precompiles
 const (
-	ModifyAllowListGasCost = 20_000
-	ReadAllowListGasCost   = 5_000
-
+	
 
 	GetPriceGasCost = 5_000
-	SetPriceGasCost = 5_000
 
-	MintGasCost = 30_000
 )
 
 // Designated addresses of stateful precompiles
@@ -26,14 +22,10 @@ const (
 // that their own modifications do not conflict with stateful precompiles that may be added to subnet-evm
 // in the future.
 var (
-	ContractDeployerAllowListAddress = common.HexToAddress("0x0200000000000000000000000000000000000000")
-	ContractNativeMinterAddress      = common.HexToAddress("0x0200000000000000000000000000000000000001")
-
+	
 	PriceOracleAddress               = common.HexToAddress("0x0300000000000000000000000000000000000001")
 
 	UsedAddresses = []common.Address{
-		ContractDeployerAllowListAddress,
-		ContractNativeMinterAddress,
 		PriceOracleAddress,
 	}
 )

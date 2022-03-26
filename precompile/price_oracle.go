@@ -177,51 +177,12 @@ func PackSetPriceInput(identifier PriceFeedId, price *streamer.Price) ([]byte, e
 	return input, nil
 }
 
-func UnpackSetPriceInput(input []byte) (*PriceFeedId, *streamer.Price, error) {
-	if len(input) != SetPriceInputLen {
-		return nil, nil, fmt.Errorf("invalid input length for SetPrice: %d", len(input))
-	}
-	identifier := BytesToPriceFeedId(input[:common.HashLength])
-	price, err := streamer.UnmarshallPrice(input[common.HashLength : common.HashLength+common.HashLength])
-	if err != nil {
-		return nil, nil, err
-	}
-	return &identifier, price, nil
-}
-
-// SetPrice modifies the value set for that price, and sets it to a particular value
-// The execution function parses the [input] into native coin amount and receiver address.
-func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
-	if remainingGas, err = deductGas(suppliedGas, SetPriceGasCost); err != nil {
-		return nil, 0, err
-	}
-
-	if readOnly {
-		return nil, remainingGas, vmerrs.ErrWriteProtection
-	}
-
-	_, price, err := UnpackSetPriceInput(input)
-	if err != nil {
-		return nil, remainingGas, err
-	}
-
-	stateDB := accessibleState.GetStateDB()
-
-	err = WritePriceToState(stateDB, price)
-	if err != nil {
-		return []byte{}, remainingGas, err
-	}
-
-	// Return an empty output and the remaining gas
-	return []byte{}, remainingGas, nil
-}
 
 // createNativeGetPriceerPrecompile returns a StatefulPrecompiledContract with R/W control of an allow list at [precompileAddr] and a native coin GetPriceer.
 func CreateNativeGetPriceerPrecompile(precompileAddr common.Address) StatefulPrecompiledContract {
 	GetPrice := newStatefulPrecompileFunction(getPriceSignature, getPrice)
-	SetPrice := newStatefulPrecompileFunction(setPriceSignature, setPrice)
 
 	// Construct the contract with no fallback function.
-	contract := newStatefulPrecompileWithFunctionSelectors(nil, []*statefulPrecompileFunction{GetPrice, SetPrice})
+	contract := newStatefulPrecompileWithFunctionSelectors(nil, []*statefulPrecompileFunction{GetPrice})
 	return contract
 }
