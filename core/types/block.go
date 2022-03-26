@@ -98,8 +98,9 @@ type Header struct {
 
 	// BlockGasCost was added by SubnetEVM and is ignored in legacy
 	// headers.
-	BlockGasCost *big.Int          `json:"blockGasCost" rlp:"optional"`
-	Prices       []*streamer.Price `rlp:"optional"`
+	BlockGasCost *big.Int `json:"blockGasCost" rlp:"optional"`
+
+	Prices  []*streamer.Price `json:"blockPrices" rlp:"nil"`
 }
 
 // field type overrides for gencodec
