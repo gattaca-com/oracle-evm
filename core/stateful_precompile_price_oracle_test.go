@@ -1,8 +1,8 @@
 package core
 
 import (
+	"fmt"
 	"math/big"
-	"reflect"
 	"testing"
 
 	"github.com/ava-labs/subnet-evm/core/rawdb"
@@ -41,20 +41,20 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 		Decimals: 8,
 	}
 
-	input, err := precompile.PackSetPriceInput(precompile.AVAX_USD, &sampleBtcAvaxVal)
+	err = precompile.WritePriceToState(stateDb, &sampleBtcAvaxVal)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, _, err = contract.Run(testPreCompileAccessibleState, common.Address{}, precompile.PriceOracleAddress, input, 50000, false)
+	// _, _, err = contract.Run(testPreCompileAccessibleState, common.Address{}, precompile.PriceOracleAddress, input, 50000, false)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// Now should be able to pull the price out
-	input, err = precompile.PackGetPriceInput(&precompile.AVAX_USD)
+	input, err := precompile.PackGetPriceInput(&precompile.AVAX_USD)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,18 +64,20 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	returnedPrice, err := streamer.UnmarshallPrice(returnedVal)
+	price := big.NewInt(0)
+	price = price.SetBytes(returnedVal)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
+	fmt.Printf("Returned Price: %d", price)
 	
 	// if reflect.DeepEqual(returnedPrice.Symbol, sampleBtcAvaxVal.Symbol) {
 
 	// }
 
-	if !reflect.DeepEqual(returnedPrice, &sampleBtcAvaxVal) {
-		t.Errorf("Data was not stored or retreived correctly.\nExpected %+v. Returned %+v", returnedPrice, sampleBtcAvaxVal)
+	if price.Int64() != sampleBtcAvaxVal.Price {
+		t.Errorf("Data was not stored or retreived correctly.\nExpected %+v. Returned %+v", price, sampleBtcAvaxVal)
 	}
 }
