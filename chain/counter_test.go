@@ -55,7 +55,7 @@ func TestCounter(t *testing.T) {
 	}
 	<-txSubmitCh
 	nonce++
-	block, err := chain.GenerateBlock()
+	block, err := chain.GenerateBlock(nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +88,7 @@ func TestCounter(t *testing.T) {
 	}
 	<-txSubmitCh
 	// Generate block
-	block, err = chain.GenerateBlock()
+	block, err = chain.GenerateBlock(nil)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -69,7 +69,7 @@ func TestSubscribeTransactions(t *testing.T) {
 		}
 	}
 	txs := <-txSubmitCh
-	block, err := chain.GenerateBlock()
+	block, err := chain.GenerateBlock(nil)
 	if err != nil {
 		t.Fatal(err)
 	}

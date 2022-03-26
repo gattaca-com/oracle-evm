@@ -38,7 +38,7 @@ func TestPayment(t *testing.T) {
 	}
 	<-txSubmitCh
 
-	block, err := chain.GenerateBlock()
+	block, err := chain.GenerateBlock(nil)
 	if err != nil {
 		t.Fatal(err)
 	}

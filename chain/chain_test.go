@@ -109,7 +109,7 @@ func (tc *testChain) GenRandomTree(genBlocks int) {
 		if err := tc.chain.SetPreference(parentBlock); err != nil {
 			tc.t.Fatal(err)
 		}
-		block, err := tc.chain.GenerateBlock()
+		block, err := tc.chain.GenerateBlock(nil)
 		if err != nil {
 			tc.t.Fatalf("chain %s failed to generate block: %s", tc.name, err)
 		}
