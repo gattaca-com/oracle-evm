@@ -78,6 +78,62 @@ func (c *PriceOracleConfig) Timestamp() *big.Int {
 	// return c.BlockTimestamp
 }
 
+// TODO PRETTIFY
+func MarshallPrice(price *streamer.Price) ([]byte, error) {
+	var toHash [32]byte
+
+	binary.LittleEndian.PutUint64(toHash[:8], uint64(price.Price))
+	binary.LittleEndian.PutUint64(toHash[8:8+8], uint64(price.Slot))
+	binary.LittleEndian.PutUint16(toHash[8+8:8+8+2], uint16(price.Decimals))
+
+	copy(toHash[8+8+2:], []byte(price.Symbol))
+
+	return toHash[:], nil
+}
+
+func PriceToHash(price *streamer.Price) common.Hash {
+	b, err := MarshallPrice(price)
+	if err != nil {
+		// gattaca TODO is this a good idea?
+		return common.Hash{}
+	}
+
+	return common.BytesToHash(b)
+}
+
+func UnmarshallPrice(data []byte) (*streamer.Price, error) {
+
+	priceVal := binary.LittleEndian.Uint64(data[:8])
+	slotVal := binary.LittleEndian.Uint64(data[8 : 8+8])
+	decimalVal := binary.LittleEndian.Uint16(data[8+8 : 8+8+2])
+	symbol := string(data[8+8+2:])
+
+	price := streamer.Price{
+		Price:    int64(priceVal),
+		Slot:     slotVal,
+		Symbol:   symbol,
+		Decimals: uint(decimalVal),
+	}
+
+	return &price, nil
+}
+
+func WritePriceToState(state StateDB, price *streamer.Price) {
+
+	if !state.Exist(PriceOracleAddress) {
+		state.CreateAccount(PriceOracleAddress)
+	}
+
+	if priceFeedId, ok := SymbolToFeedId[price.Symbol]; ok {
+		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), PriceToHash(price))
+	}
+}
+
+/*
+*
+* Get Price Functionality Below
+ */
+
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
 func PackGetPriceInput(identifier *big.Int) ([]byte, error) {
 	// function selector (4 bytes) + input(hash for address + hash for amount)
@@ -126,45 +182,10 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 	return price.Bytes(), remainingGas, nil
 }
 
-// TODO PRETTIFY
-func MarshallPrice(price *streamer.Price) ([]byte, error) {
-	var toHash [32]byte
-
-	binary.LittleEndian.PutUint64(toHash[:8], uint64(price.Price))
-	binary.LittleEndian.PutUint64(toHash[8:8+8], uint64(price.Slot))
-	binary.LittleEndian.PutUint16(toHash[8+8:8+8+2], uint16(price.Decimals))
-
-	copy(toHash[8+8+2:], []byte(price.Symbol))
-
-	return toHash[:], nil
-}
-
-func PriceToHash(price *streamer.Price) common.Hash {
-	b, err := MarshallPrice(price)
-	if err != nil {
-		// gattaca TODO is this a good idea?
-		return common.Hash{}
-	}
-
-	return common.BytesToHash(b)
-}
-
-func UnmarshallPrice(data []byte) (*streamer.Price, error) {
-
-	priceVal := binary.LittleEndian.Uint64(data[:8])
-	slotVal := binary.LittleEndian.Uint64(data[8 : 8+8])
-	decimalVal := binary.LittleEndian.Uint16(data[8+8 : 8+8+2])
-	symbol := string(data[8+8+2:])
-
-	price := streamer.Price{
-		Price:    int64(priceVal),
-		Slot:     slotVal,
-		Symbol:   symbol,
-		Decimals: uint(decimalVal),
-	}
-
-	return &price, nil
-}
+/*
+*
+* Set Price Functionality Below
+ */
 
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
 func PackSetPriceInput(identifier *big.Int, price *streamer.Price) ([]byte, error) {
@@ -200,17 +221,6 @@ func UnpackSetPriceInput(input []byte) (*PriceFeedId, *streamer.Price, error) {
 	return &identifier, price, nil
 }
 
-func WritePriceToState(state StateDB, price *streamer.Price) {
-
-	if !state.Exist(PriceOracleAddress) {
-		state.CreateAccount(PriceOracleAddress)
-	}
-
-	if priceFeedId, ok := SymbolToFeedId[price.Symbol]; ok {
-		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), PriceToHash(price))
-	}
-}
-
 // SetPrice modifies the value set for that price, and sets it to a particular value
 // The execution function parses the [input] into native coin amount and receiver address.
 func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
@@ -228,25 +238,15 @@ func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 	}
 
 	stateDB := accessibleState.GetStateDB()
-	// Verify that the caller is in the allow list and therefore has the right to modify it
-	// callerStatus := getAllowListStatus(stateDB, PriceOracleAddress, caller)
-	// if !callerStatus.IsEnabled() {
-	// 	return nil, remainingGas, fmt.Errorf("%w: %s", ErrCannotGetPrice, caller)
-	// }
 
-	// if there is no address in the state, create one.
 	WritePriceToState(stateDB, price)
+
 	// Return an empty output and the remaining gas
 	return []byte{}, remainingGas, nil
 }
 
 // createNativeGetPriceerPrecompile returns a StatefulPrecompiledContract with R/W control of an allow list at [precompileAddr] and a native coin GetPriceer.
 func CreateNativeGetPriceerPrecompile(precompileAddr common.Address) StatefulPrecompiledContract {
-	// setAdmin := newStatefulPrecompileFunction(setAdminSignature, createAllowListRoleSetter(precompileAddr, AllowListAdmin))
-	// setEnabled := newStatefulPrecompileFunction(setEnabledSignature, createAllowListRoleSetter(precompileAddr, AllowListEnabled))
-	// setNone := newStatefulPrecompileFunction(setNoneSignature, createAllowListRoleSetter(precompileAddr, AllowListNoRole))
-	// read := newStatefulPrecompileFunction(readAllowListSignature, createReadAllowList(precompileAddr))
-
 	GetPrice := newStatefulPrecompileFunction(getPriceSignature, getPrice)
 	SetPrice := newStatefulPrecompileFunction(setPriceSignature, setPrice)
 
