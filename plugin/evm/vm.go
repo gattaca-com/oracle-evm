@@ -60,8 +60,8 @@ import (
 
 	avalancheJSON "github.com/ava-labs/avalanchego/utils/json"
 
-	"github.com/gattca/oracle-price-streamer/streamer"
 	"github.com/gagliardetto/solana-go"
+	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
 var (
@@ -156,7 +156,6 @@ type VM struct {
 	networkCodec codec.Manager
 
 	bootstrapped bool
-
 
 	PythStreamer streamer.PythStreamer // Gattaca Mod
 }
@@ -321,11 +320,10 @@ func (vm *VM) Initialize(
 		lastAcceptedHash = common.BytesToHash(lastAcceptedBytes)
 	}
 
-
 	// ###################### Gattaca Mod. initialize pyth streamer ##############################
 	// UGLY HARD CODED FOR NOW
 	var testRPC = "https://api.devnet.solana.com"
-	var testWS = "wss://api.devnet.solana.com"	
+	var testWS = "wss://api.devnet.solana.com"
 	avaxKey := solana.MustPublicKeyFromBase58("DDdPuysfkxPq5Y1ZtTSk1H5n7iBKc9wtEKUwd1TNu3Gc")
 	products := make(map[solana.PublicKey]streamer.PythProduct)
 	products[avaxKey] = streamer.PythProduct{
@@ -335,7 +333,8 @@ func (vm *VM) Initialize(
 	pythStreamer := streamer.NewPythStreamer(products, testRPC, testWS)
 	vm.PythStreamer = *pythStreamer
 
-	go vm.PythStreamer.StreamProducts() 
+	go vm.PythStreamer.StreamProducts()
+	<-vm.PythStreamer.Initialized
 	// #############################################################################################
 
 	ethChain, err := subnetEVM.NewETHChain(&ethConfig, &nodecfg, vm.chaindb, vm.config.EthBackendSettings(), lastAcceptedHash, &vm.clock)
@@ -436,7 +435,7 @@ func (vm *VM) Shutdown() error {
 
 // buildBlock builds a block to be wrapped by ChainState
 func (vm *VM) buildBlock() (snowman.Block, error) {
-	
+
 	// GATTACA MOD Get latest prices and write to block
 	oraclePrices, err := vm.PythStreamer.GetPricesBytes()
 
@@ -445,9 +444,6 @@ func (vm *VM) buildBlock() (snowman.Block, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	
-	
 
 	// Note: the status of block is set by ChainState
 	blk := &Block{
