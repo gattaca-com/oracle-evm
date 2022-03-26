@@ -43,9 +43,11 @@ import (
 	"github.com/ava-labs/subnet-evm/core/state"
 	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ava-labs/subnet-evm/params"
+	"github.com/ava-labs/subnet-evm/precompile"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattca/oracle-price-streamer/streamer"
 )
 
 // environment is the worker's current environment and holds all of the current state information.
@@ -138,7 +140,7 @@ func (w *worker) commitNewWork(oraclePrices []byte) (*types.Block, error) {
 		GasLimit:   gasLimit,
 		Extra:      nil,
 		Time:       uint64(timestamp),
-		Prices: oraclePrices,
+		Prices:     oraclePrices,
 	}
 
 	bigTimestamp := big.NewInt(timestamp)
@@ -177,6 +179,20 @@ func (w *worker) commitNewWork(oraclePrices []byte) (*types.Block, error) {
 			localTxs[account] = txs
 		}
 	}
+
+	// Commit prices to state
+	prices, err := streamer.BytesToPrices(header.Prices)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, price := range prices {
+		err = precompile.WritePriceToState(env.state, price)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(env.signer, localTxs, header.BaseFee)
 		w.commitTransactions(env, txs, w.coinbase)

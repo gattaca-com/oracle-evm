@@ -352,7 +352,7 @@ func TestBuildEthTxBlock(t *testing.T) {
 
 	<-issuer
 
-	time.Sleep(30 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	blk1, err := vm.BuildBlock()
 	if err != nil {
