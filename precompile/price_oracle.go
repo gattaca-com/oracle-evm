@@ -42,6 +42,10 @@ func BytesToPriceFeedId(b []byte) PriceFeedId {
 	return PriceFeedId(common.BytesToHash(b))
 }
 
+func (p *PriceFeedId) Bytes() []byte {
+	return common.Hash(*p).Bytes()
+}
+
 // PriceOracleConfig wraps [AllowListConfig] and uses it to implement the StatefulPrecompileConfig
 // interface while adding in the contract deployer specific precompile address.
 type PriceOracleConfig struct {
@@ -79,8 +83,7 @@ func (c *PriceOracleConfig) Timestamp() *big.Int {
 
 // TODO PRETTIFY
 
-
-func WritePriceToState(state StateDB, price *streamer.Price) {
+func WritePriceToState(state StateDB, price *streamer.Price) error {
 
 	if !state.Exist(PriceOracleAddress) {
 		state.CreateAccount(PriceOracleAddress)
@@ -88,7 +91,10 @@ func WritePriceToState(state StateDB, price *streamer.Price) {
 
 	if priceFeedId, ok := SymbolToFeedId[price.Symbol]; ok {
 		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), streamer.PriceToHash(price))
+		return nil
 	}
+
+	return fmt.Errorf("Symbol id not currently supported to write. Key %s", price.Symbol)
 }
 
 /*
@@ -97,7 +103,7 @@ func WritePriceToState(state StateDB, price *streamer.Price) {
  */
 
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
-func PackGetPriceInput(identifier *big.Int) ([]byte, error) {
+func PackGetPriceInput(identifier *PriceFeedId) ([]byte, error) {
 	// function selector (4 bytes) + input(hash for address + hash for amount)
 	fullLen := selectorLen + GetPriceInputLen
 	input := make([]byte, fullLen)
@@ -108,12 +114,12 @@ func PackGetPriceInput(identifier *big.Int) ([]byte, error) {
 
 // UnpackGetPriceInput attempts to unpack [input] into the arguments to the GetPrice precompile
 // assumes that [input] does not include selector (omits first 4 bytes in PackGetPriceInput)
-func UnpackGetPriceInput(input []byte) (*big.Int, error) {
+func UnpackGetPriceInput(input []byte) (*PriceFeedId, error) {
 	if len(input) != GetPriceInputLen {
 		return nil, fmt.Errorf("invalid input length for GetPriceing: %d", len(input))
 	}
-	identifier := new(big.Int).SetBytes(input[:common.HashLength])
-	return identifier, nil
+	identifier := BytesToPriceFeedId(input[:common.HashLength])
+	return &identifier, nil
 }
 
 // createGetPriceNativeCoin checks if the caller is permissioned for GetPriceing operation.
@@ -139,7 +145,7 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 		stateDB.CreateAccount(addr)
 	}
 
-	price := stateDB.GetState(addr, common.BigToHash(identifier))
+	price := stateDB.GetState(addr, common.Hash(*identifier))
 	// Return an empty output and the remaining gas
 	return price.Bytes(), remainingGas, nil
 }
@@ -150,7 +156,7 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
  */
 
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
-func PackSetPriceInput(identifier *big.Int, price *streamer.Price) ([]byte, error) {
+func PackSetPriceInput(identifier PriceFeedId, price *streamer.Price) ([]byte, error) {
 	priceByte, err := streamer.MarshallPrice(price)
 	if err != nil {
 		return nil, err
@@ -201,7 +207,10 @@ func setPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 
 	stateDB := accessibleState.GetStateDB()
 
-	WritePriceToState(stateDB, price)
+	err = WritePriceToState(stateDB, price)
+	if err != nil {
+		return []byte{}, remainingGas, err
+	}
 
 	// Return an empty output and the remaining gas
 	return []byte{}, remainingGas, nil

@@ -37,11 +37,11 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 	sampleBtcAvaxVal := streamer.Price{
 		Price: 10000,
 		Slot: 12000,
-		Symbol: "BTC/AVAX",
+		Symbol: "AVAX/USD",
 		Decimals: 8,
 	}
 
-	input, err := precompile.PackSetPriceInput(big.NewInt(0), &sampleBtcAvaxVal)
+	input, err := precompile.PackSetPriceInput(precompile.AVAX_USD, &sampleBtcAvaxVal)
 
 	if err != nil {
 		t.Fatal(err)
@@ -54,12 +54,12 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 	}
 
 	// Now should be able to pull the price out
-	input, err = precompile.PackGetPriceInput(big.NewInt(0))
+	input, err = precompile.PackGetPriceInput(&precompile.AVAX_USD)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	returnedVal, _, err := contract.Run(&testPreCompileAccessibleState, common.Address{}, precompile.PriceOracleAddress, input, 50000, false)
+	returnedVal, _, err := contract.Run(testPreCompileAccessibleState, common.Address{}, precompile.PriceOracleAddress, input, 50000, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -71,8 +71,11 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 	}
 
 	
+	// if reflect.DeepEqual(returnedPrice.Symbol, sampleBtcAvaxVal.Symbol) {
 
-	if reflect.DeepEqual(returnedPrice, &sampleBtcAvaxVal) {
-		t.Errorf("Data was not stored or retreived correctly. Expected %+v. Returned %+v", returnedPrice, sampleBtcAvaxVal)
+	// }
+
+	if !reflect.DeepEqual(returnedPrice, &sampleBtcAvaxVal) {
+		t.Errorf("Data was not stored or retreived correctly.\nExpected %+v. Returned %+v", returnedPrice, sampleBtcAvaxVal)
 	}
 }
