@@ -100,7 +100,7 @@ type Header struct {
 	// headers.
 	BlockGasCost *big.Int `json:"blockGasCost" rlp:"optional"`
 
-	Prices  []byte `json:"blockPrices"    gencodec:"required"`
+	Prices []byte `json:"blockPrices"    gencodec:"required" rlp:"optional"`
 }
 
 // field type overrides for gencodec

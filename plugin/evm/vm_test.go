@@ -352,6 +352,8 @@ func TestBuildEthTxBlock(t *testing.T) {
 
 	<-issuer
 
+	time.Sleep(5 * time.Second)
+
 	blk1, err := vm.BuildBlock()
 	if err != nil {
 		t.Fatal(err)
@@ -443,6 +445,7 @@ func TestBuildEthTxBlock(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	if status := blk2Refreshed.Status(); status != choices.Accepted {
 		t.Fatalf("Expected refreshed blk2 to be Accepted, but found status: %s", status)
 	}
@@ -483,6 +486,13 @@ func TestBuildEthTxBlock(t *testing.T) {
 
 	// State root should be committed when accepted tip on shutdown
 	ethBlk2 := blk2.(*chain.BlockWrapper).Block.(*Block).ethBlock
+
+	prices := ethBlk2.GetPrices()
+
+	if len(prices) == 0 {
+		t.Fatalf("No prices in blk2")
+	}
+
 	if ethBlk2Root := ethBlk2.Root(); !restartedVM.chain.BlockChain().HasState(ethBlk2Root) {
 		t.Fatalf("Expected blk2 state root to not be pruned after shutdown (last accepted tip should be committed)")
 	}
