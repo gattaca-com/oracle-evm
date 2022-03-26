@@ -64,7 +64,7 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	returnedPrice, err := precompile.UnmarshallPrice(returnedVal)
+	returnedPrice, err := streamer.UnmarshallPrice(returnedVal)
 
 	if err != nil {
 		t.Fatal(err)

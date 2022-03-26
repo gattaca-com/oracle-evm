@@ -4,7 +4,6 @@
 package precompile
 
 import (
-	"encoding/binary"
 	"errors"
 	"fmt"
 	"math/big"
@@ -79,44 +78,7 @@ func (c *PriceOracleConfig) Timestamp() *big.Int {
 }
 
 // TODO PRETTIFY
-func MarshallPrice(price *streamer.Price) ([]byte, error) {
-	var toHash [32]byte
 
-	binary.LittleEndian.PutUint64(toHash[:8], uint64(price.Price))
-	binary.LittleEndian.PutUint64(toHash[8:8+8], uint64(price.Slot))
-	binary.LittleEndian.PutUint16(toHash[8+8:8+8+2], uint16(price.Decimals))
-
-	copy(toHash[8+8+2:], []byte(price.Symbol))
-
-	return toHash[:], nil
-}
-
-func PriceToHash(price *streamer.Price) common.Hash {
-	b, err := MarshallPrice(price)
-	if err != nil {
-		// gattaca TODO is this a good idea?
-		return common.Hash{}
-	}
-
-	return common.BytesToHash(b)
-}
-
-func UnmarshallPrice(data []byte) (*streamer.Price, error) {
-
-	priceVal := binary.LittleEndian.Uint64(data[:8])
-	slotVal := binary.LittleEndian.Uint64(data[8 : 8+8])
-	decimalVal := binary.LittleEndian.Uint16(data[8+8 : 8+8+2])
-	symbol := string(data[8+8+2:])
-
-	price := streamer.Price{
-		Price:    int64(priceVal),
-		Slot:     slotVal,
-		Symbol:   symbol,
-		Decimals: uint(decimalVal),
-	}
-
-	return &price, nil
-}
 
 func WritePriceToState(state StateDB, price *streamer.Price) {
 
@@ -125,7 +87,7 @@ func WritePriceToState(state StateDB, price *streamer.Price) {
 	}
 
 	if priceFeedId, ok := SymbolToFeedId[price.Symbol]; ok {
-		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), PriceToHash(price))
+		state.SetState(PriceOracleAddress, common.Hash(priceFeedId), streamer.PriceToHash(price))
 	}
 }
 
@@ -189,7 +151,7 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 
 // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
 func PackSetPriceInput(identifier *big.Int, price *streamer.Price) ([]byte, error) {
-	priceByte, err := MarshallPrice(price)
+	priceByte, err := streamer.MarshallPrice(price)
 	if err != nil {
 		return nil, err
 	}
@@ -214,7 +176,7 @@ func UnpackSetPriceInput(input []byte) (*PriceFeedId, *streamer.Price, error) {
 		return nil, nil, fmt.Errorf("invalid input length for SetPrice: %d", len(input))
 	}
 	identifier := BytesToPriceFeedId(input[:common.HashLength])
-	price, err := UnmarshallPrice(input[common.HashLength : common.HashLength+common.HashLength])
+	price, err := streamer.UnmarshallPrice(input[common.HashLength : common.HashLength+common.HashLength])
 	if err != nil {
 		return nil, nil, err
 	}

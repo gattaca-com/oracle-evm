@@ -100,7 +100,7 @@ type Header struct {
 	// headers.
 	BlockGasCost *big.Int `json:"blockGasCost" rlp:"optional"`
 
-	Prices  []*streamer.Price `json:"blockPrices" rlp:"nil"`
+	Prices  []byte `json:"blockPrices"    gencodec:"required"`
 }
 
 // field type overrides for gencodec
@@ -373,11 +373,14 @@ func (b *Block) Hash() common.Hash {
 }
 
 func (b *Block) SetPrices(prices []*streamer.Price) {
-	b.header.Prices = prices
+	b.header.Prices, _ = streamer.PricesToBytes(prices)
 }
 
 func (b *Block) GetPrices() []*streamer.Price {
-	return b.header.Prices
+
+	prices, _ := streamer.BytesToPrices(b.header.Prices)
+
+	return prices
 }
 
 type Blocks []*Block
