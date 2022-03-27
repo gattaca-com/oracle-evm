@@ -130,9 +130,8 @@ func UnpackGetPriceInput(input []byte) (*PriceFeedId, error) {
 	return &identifier, nil
 }
 
-// createGetPriceNativeCoin checks if the caller is permissioned for GetPriceing operation.
-// The execution function parses the [input] into native coin amount and receiver address.
-func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
+
+func getPriceStruct(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (price *streamer.Price, remainingGas uint64, err error) {
 	if remainingGas, err = deductGas(suppliedGas, GetPriceGasCost); err != nil {
 		return nil, 0, err
 	}
@@ -153,11 +152,28 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 		stateDB.CreateAccount(addr)
 	}
 
-	priceHash := stateDB.GetState(addr, common.Hash(*identifier))
-	priceStruct, _ := streamer.UnmarshallPrice(priceHash.Bytes())
+	priceStructHash := stateDB.GetState(addr, common.Hash(*identifier))
+	priceStruct, _ := streamer.UnmarshallPrice(priceStructHash.Bytes())
+
+	
+	return priceStruct, remainingGas, nil
+}
+
+
+func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
+
+	priceStruct, remainingGas, err  := getPriceStruct(accessibleState, caller, addr, input, suppliedGas, readOnly)
 	price := big.NewInt(priceStruct.Price)
 	// Return an empty output and the remaining gas
 	return common.BigToHash(price).Bytes(), remainingGas, nil
+}
+
+func getDecimals(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
+
+	priceStruct, remainingGas, err  := getPriceStruct(accessibleState, caller, addr, input, suppliedGas, readOnly)
+	decimals := big.NewInt(int64(priceStruct.Decimals))
+	// Return an empty output and the remaining gas
+	return common.BigToHash(decimals).Bytes(), remainingGas, nil
 }
 
 /*
@@ -191,8 +207,9 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 // createNativeGetPriceerPrecompile returns a StatefulPrecompiledContract with R/W control of an allow list at [precompileAddr] and a native coin GetPriceer.
 func CreateNativeGetPriceerPrecompile(precompileAddr common.Address) StatefulPrecompiledContract {
 	GetPrice := newStatefulPrecompileFunction(getPriceSignature, getPrice)
+	GetDecimals := newStatefulPrecompileFunction(getDecimalsSignature, getDecimals)
 
 	// Construct the contract with no fallback function.
-	contract := newStatefulPrecompileWithFunctionSelectors(nil, []*statefulPrecompileFunction{GetPrice})
+	contract := newStatefulPrecompileWithFunctionSelectors(nil, []*statefulPrecompileFunction{GetPrice, GetDecimals})
 	return contract
 }
