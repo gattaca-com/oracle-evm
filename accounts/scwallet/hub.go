@@ -51,10 +51,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/accounts"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/accounts"
 	pcsc "github.com/gballet/go-libpcsclite"
 )
 

@@ -17,10 +17,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/trie"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/trie"
 
 	"github.com/stretchr/testify/assert"
 
@@ -37,14 +37,14 @@ import (
 
 	engCommon "github.com/ava-labs/avalanchego/snow/engine/common"
 
-	"github.com/ava-labs/subnet-evm/consensus/dummy"
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/eth"
-	"github.com/ava-labs/subnet-evm/params"
-	"github.com/ava-labs/subnet-evm/rpc"
+	"github.com/gattaca-com/oracle-evm/consensus/dummy"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/eth"
+	"github.com/gattaca-com/oracle-evm/params"
+	"github.com/gattaca-com/oracle-evm/rpc"
 
-	accountKeystore "github.com/ava-labs/subnet-evm/accounts/keystore"
+	accountKeystore "github.com/gattaca-com/oracle-evm/accounts/keystore"
 )
 
 var (

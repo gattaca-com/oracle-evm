@@ -9,16 +9,16 @@ import (
 	"testing"
 
 	"github.com/ava-labs/avalanchego/utils/timer/mockable"
-	"github.com/ava-labs/subnet-evm/accounts/keystore"
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/rawdb"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/eth"
-	"github.com/ava-labs/subnet-evm/eth/ethconfig"
-	"github.com/ava-labs/subnet-evm/node"
-	"github.com/ava-labs/subnet-evm/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/gattaca-com/oracle-evm/accounts/keystore"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/eth"
+	"github.com/gattaca-com/oracle-evm/eth/ethconfig"
+	"github.com/gattaca-com/oracle-evm/node"
+	"github.com/gattaca-com/oracle-evm/params"
 )
 
 var (

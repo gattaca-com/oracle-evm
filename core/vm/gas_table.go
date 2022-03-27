@@ -29,10 +29,10 @@ package vm
 import (
 	"errors"
 
-	"github.com/ava-labs/subnet-evm/params"
-	"github.com/ava-labs/subnet-evm/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
+	"github.com/gattaca-com/oracle-evm/params"
+	"github.com/gattaca-com/oracle-evm/vmerrs"
 )
 
 // memoryGasCost calculates the quadratic gas for memory expansion. It does so

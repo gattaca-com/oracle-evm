@@ -7,7 +7,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/ava-labs/subnet-evm/cmd/simulator/worker"
+	"github.com/gattaca-com/oracle-evm/cmd/simulator/worker"
 )
 
 func main() {

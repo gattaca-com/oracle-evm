@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/plugin/evm/message"
+	"github.com/gattaca-com/oracle-evm/plugin/evm/message"
 
 	"github.com/ava-labs/avalanchego/snow/validators"
 

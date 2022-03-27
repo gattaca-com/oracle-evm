@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ava-labs/subnet-evm/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/gattca/oracle-price-streamer/streamer"
+	"github.com/gattaca-com/OraclePriceStreamer/streamer"
+	"github.com/gattaca-com/oracle-evm/vmerrs"
 )
 
 type PriceFeedId common.Hash

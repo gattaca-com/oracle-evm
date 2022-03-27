@@ -30,11 +30,11 @@ import (
 	"math/big"
 	"sync/atomic"
 
-	"github.com/ava-labs/subnet-evm/consensus"
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/core/vm"
-	"github.com/ava-labs/subnet-evm/params"
+	"github.com/gattaca-com/oracle-evm/consensus"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/core/vm"
+	"github.com/gattaca-com/oracle-evm/params"
 )
 
 // statePrefetcher is a basic Prefetcher, which blindly executes a block on top

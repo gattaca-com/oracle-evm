@@ -38,7 +38,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
 
-	"github.com/gattca/oracle-price-streamer/streamer"
+	"github.com/gattaca-com/OraclePriceStreamer/streamer"
 )
 
 var (

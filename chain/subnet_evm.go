@@ -8,18 +8,16 @@ import (
 	"time"
 
 	"github.com/ava-labs/avalanchego/utils/timer/mockable"
-	"github.com/ava-labs/subnet-evm/constants"
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/eth"
-	"github.com/ava-labs/subnet-evm/ethdb"
-	"github.com/ava-labs/subnet-evm/node"
-	"github.com/ava-labs/subnet-evm/rpc"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
-	
-
+	"github.com/gattaca-com/oracle-evm/constants"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/eth"
+	"github.com/gattaca-com/oracle-evm/ethdb"
+	"github.com/gattaca-com/oracle-evm/node"
+	"github.com/gattaca-com/oracle-evm/rpc"
 )
 
 type (

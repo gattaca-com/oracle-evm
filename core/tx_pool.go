@@ -36,15 +36,15 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/consensus/dummy"
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/prque"
 	"github.com/ethereum/go-ethereum/event"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
+	"github.com/gattaca-com/oracle-evm/consensus/dummy"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/params"
 )
 
 const (

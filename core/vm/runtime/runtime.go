@@ -31,12 +31,12 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/core/rawdb"
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/core/vm"
-	"github.com/ava-labs/subnet-evm/params"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/core/vm"
+	"github.com/gattaca-com/oracle-evm/params"
 )
 
 // Config is a basic type specifying certain configuration flags for running

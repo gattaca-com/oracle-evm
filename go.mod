@@ -1,4 +1,4 @@
-module github.com/ava-labs/subnet-evm
+module github.com/gattaca-com/oracle-evm
 
 go 1.17
 
@@ -11,7 +11,7 @@ require (
 	github.com/ethereum/go-ethereum v1.10.16
 	github.com/fjl/memsize v0.0.0-20190710130421-bcb5799ab5e5
 	github.com/gagliardetto/solana-go v1.3.1-0.20220222155336-dd0af958252d
-	github.com/gattca/oracle-price-streamer v0.0.1
+	github.com/gattaca-com/OraclePriceStreamer v0.0.0-20220327022952-97255b69bf93
 	github.com/gballet/go-libpcsclite v0.0.0-20191108122812-4678299bea08
 	github.com/google/uuid v1.1.5
 	github.com/gorilla/rpc v1.2.0
@@ -43,8 +43,6 @@ require (
 	gotest.tools v2.2.0+incompatible
 
 )
-
-replace github.com/gattca/oracle-price-streamer v0.0.1 => ../../gattaca/OraclePriceStreamer
 
 require (
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect

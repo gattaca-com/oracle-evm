@@ -31,12 +31,12 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/core/rawdb"
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/params"
-	"github.com/ava-labs/subnet-evm/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/params"
+	"github.com/gattaca-com/oracle-evm/vmerrs"
 )
 
 func TestMemoryGasCost(t *testing.T) {

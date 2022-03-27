@@ -11,14 +11,14 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/ethclient"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/params"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/ethclient"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/ava-labs/subnet-evm/cmd/simulator/key"
-	"github.com/ava-labs/subnet-evm/cmd/simulator/metrics"
+	"github.com/gattaca-com/oracle-evm/cmd/simulator/key"
+	"github.com/gattaca-com/oracle-evm/cmd/simulator/metrics"
 )
 
 const (

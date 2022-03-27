@@ -4,7 +4,7 @@
 package evm
 
 import (
-	"github.com/ava-labs/subnet-evm/ethdb"
+	"github.com/gattaca-com/oracle-evm/ethdb"
 
 	"github.com/ava-labs/avalanchego/database"
 )

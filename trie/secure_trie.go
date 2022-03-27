@@ -29,10 +29,10 @@ package trie
 import (
 	"fmt"
 
-	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/gattaca-com/oracle-evm/core/types"
 )
 
 // SecureTrie wraps a trie with key hashing. In a secure trie, all

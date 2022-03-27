@@ -9,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/ava-labs/avalanchego/utils/formatting"
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/params"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/params"
 	"github.com/stretchr/testify/assert"
 )
 

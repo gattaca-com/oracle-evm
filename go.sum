@@ -316,6 +316,8 @@ github.com/gagliardetto/solana-go v1.3.1-0.20220222155336-dd0af958252d h1:jLlpsh
 github.com/gagliardetto/solana-go v1.3.1-0.20220222155336-dd0af958252d/go.mod h1:vhaJ8hSOXJamo+Eh9kpD/TeuvF6rLWBzD7LU9xg9vbk=
 github.com/gagliardetto/treeout v0.1.4 h1:ozeYerrLCmCubo1TcIjFiOWTTGteOOHND1twdFpgwaw=
 github.com/gagliardetto/treeout v0.1.4/go.mod h1:loUefvXTrlRG5rYmJmExNryyBRh8f89VZhmMOyCyqok=
+github.com/gattaca-com/OraclePriceStreamer v0.0.0-20220327022952-97255b69bf93 h1:/r8x8xpFZDUoXAPhtdcbWrF77DOkzDB0nIgy9fthPIE=
+github.com/gattaca-com/OraclePriceStreamer v0.0.0-20220327022952-97255b69bf93/go.mod h1:4gJSR0j/RZN6+Ql5KHH/WcOkHi2KEpX4FvOPYko/yJo=
 github.com/gballet/go-libpcsclite v0.0.0-20190607065134-2772fd86a8ff/go.mod h1:x7DCsMOv1taUwEWCzT4cmDeAkigA5/QCwUodaVOe8Ww=
 github.com/gballet/go-libpcsclite v0.0.0-20191108122812-4678299bea08 h1:f6D9Hr8xV8uYKlyuj8XIruxlh9WjVjdh1gIicAS7ays=
 github.com/gballet/go-libpcsclite v0.0.0-20191108122812-4678299bea08/go.mod h1:x7DCsMOv1taUwEWCzT4cmDeAkigA5/QCwUodaVOe8Ww=

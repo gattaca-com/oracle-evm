@@ -31,10 +31,10 @@ import (
 	"io"
 	"os"
 
-	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/gattaca-com/oracle-evm/core/types"
 )
 
 // errNoActiveJournal is returned if a transaction is attempted to be inserted

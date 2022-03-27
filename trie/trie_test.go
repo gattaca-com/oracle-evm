@@ -38,13 +38,13 @@ import (
 	"testing"
 	"testing/quick"
 
-	"github.com/ava-labs/subnet-evm/core/rawdb"
-	"github.com/ava-labs/subnet-evm/ethdb"
-	"github.com/ava-labs/subnet-evm/ethdb/memorydb"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
+	"github.com/gattaca-com/oracle-evm/ethdb"
+	"github.com/gattaca-com/oracle-evm/ethdb/memorydb"
 	"golang.org/x/crypto/sha3"
 )
 

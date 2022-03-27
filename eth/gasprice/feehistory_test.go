@@ -32,12 +32,12 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/types"
 
-	"github.com/ava-labs/subnet-evm/params"
-	"github.com/ava-labs/subnet-evm/rpc"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/params"
+	"github.com/gattaca-com/oracle-evm/rpc"
 )
 
 func TestFeeHistory(t *testing.T) {

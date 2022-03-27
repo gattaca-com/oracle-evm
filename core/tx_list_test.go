@@ -31,8 +31,8 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/gattaca-com/oracle-evm/core/types"
 )
 
 // Tests that transactions can be added to strict lists and list contents and

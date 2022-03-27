@@ -30,9 +30,9 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/core/rawdb"
-	"github.com/ava-labs/subnet-evm/ethdb/memorydb"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
+	"github.com/gattaca-com/oracle-evm/ethdb/memorydb"
 )
 
 // Tests that given a database with random data content, all parts of a snapshot

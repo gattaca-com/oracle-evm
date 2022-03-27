@@ -29,10 +29,10 @@ package core
 import (
 	"math/big"
 
-	"github.com/ava-labs/subnet-evm/consensus"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/core/vm"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/consensus"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/core/vm"
 )
 
 // ChainContext supports retrieving headers and consensus parameters from the

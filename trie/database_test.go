@@ -29,8 +29,8 @@ package trie
 import (
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/ethdb/memorydb"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/ethdb/memorydb"
 )
 
 // Tests that the trie database returns a missing trie node error if attempting

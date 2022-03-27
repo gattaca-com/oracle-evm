@@ -32,11 +32,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/ava-labs/subnet-evm/accounts"
-	"github.com/ava-labs/subnet-evm/accounts/external"
-	"github.com/ava-labs/subnet-evm/accounts/keystore"
-	"github.com/ava-labs/subnet-evm/rpc"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/accounts"
+	"github.com/gattaca-com/oracle-evm/accounts/external"
+	"github.com/gattaca-com/oracle-evm/accounts/keystore"
+	"github.com/gattaca-com/oracle-evm/rpc"
 )
 
 // Config represents a small collection of configuration values to fine tune the

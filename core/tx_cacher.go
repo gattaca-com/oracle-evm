@@ -27,7 +27,7 @@
 package core
 
 import (
-	"github.com/ava-labs/subnet-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/core/types"
 )
 
 // txSenderCacherRequest is a request for recovering transaction senders with a

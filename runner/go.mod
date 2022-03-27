@@ -1,16 +1,16 @@
-module github.com/ava-labs/subnet-evm/runner
+module github.com/gattaca-com/oracle-evm/runner
 
 go 1.17
 
 // require "runner" own go module file to avoid pulling
 // "avalanche-network-runner" dependencies
 
-replace github.com/ava-labs/subnet-evm => ../..
+replace github.com/gattaca-com/oracle-evm => ../..
 
 require (
 	github.com/ava-labs/avalanche-network-runner v0.0.0-20211220205928-4a40af6d2f7e
 	github.com/ava-labs/avalanchego v1.7.2
-	github.com/ava-labs/subnet-evm v0.0.0-00010101000000-000000000000
+	github.com/gattaca-com/oracle-evm v0.0.0-00010101000000-000000000000
 	github.com/onsi/ginkgo/v2 v2.0.0
 	github.com/spf13/cobra v1.2.1
 )

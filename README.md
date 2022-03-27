@@ -344,7 +344,7 @@ and creates a `subnet-evm` genesis file.
 
 ```bash
 # to startup a local cluster (good for development)
-cd ${HOME}/go/src/github.com/ava-labs/subnet-evm
+cd ${HOME}/go/src/github.com/gattaca-com/oracle-evm
 ./scripts/run.sh 1.7.7 0x8db97C7cEcE249c2b98bDC0226Cc4C2A57BF52FC
 ```
 
@@ -502,7 +502,7 @@ First, you'll need to compile the subnet-evm into a binary that AvalancheGo
 can interact with. To do this, run the following commands (assumes you don't
 yet have the `subnet-evm` repository downloaded):
 ```bash
-git clone https://github.com/ava-labs/subnet-evm.git;
+git clone https://github.com/gattaca-com/oracle-evm.git;
 cd subnet-evm;
 ./scripts/build.sh build/srEXiWaHuhNyGwPUi444Tu47ZEDwxTWrbQiuD7FmgSAQ6X7Dy;
 ```

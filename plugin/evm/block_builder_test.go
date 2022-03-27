@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/params"
+	"github.com/gattaca-com/oracle-evm/params"
 
 	"github.com/ava-labs/avalanchego/snow"
 )

@@ -29,10 +29,10 @@ package vm
 import (
 	"hash"
 
-	"github.com/ava-labs/subnet-evm/vmerrs"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/vmerrs"
 )
 
 // Config are the configuration options for the Interpreter

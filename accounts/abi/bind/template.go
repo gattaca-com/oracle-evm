@@ -26,7 +26,7 @@
 
 package bind
 
-import "github.com/ava-labs/subnet-evm/accounts/abi"
+import "github.com/gattaca-com/oracle-evm/accounts/abi"
 
 // tmplData is the data structure required to fill the binding template.
 type tmplData struct {
@@ -102,10 +102,10 @@ import (
 	"strings"
 	"errors"
 
-	"github.com/ava-labs/subnet-evm/accounts/abi"
-	"github.com/ava-labs/subnet-evm/accounts/abi/bind"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/interfaces"
+	"github.com/gattaca-com/oracle-evm/accounts/abi"
+	"github.com/gattaca-com/oracle-evm/accounts/abi/bind"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/interfaces"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/event"
 )

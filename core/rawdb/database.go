@@ -32,11 +32,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/ethdb"
-	"github.com/ava-labs/subnet-evm/ethdb/leveldb"
-	"github.com/ava-labs/subnet-evm/ethdb/memorydb"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/ethdb"
+	"github.com/gattaca-com/oracle-evm/ethdb/leveldb"
+	"github.com/gattaca-com/oracle-evm/ethdb/memorydb"
 	"github.com/olekukonko/tablewriter"
 )
 

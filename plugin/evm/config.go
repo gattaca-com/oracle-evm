@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/eth"
+	"github.com/gattaca-com/oracle-evm/eth"
 	"github.com/spf13/cast"
 )
 

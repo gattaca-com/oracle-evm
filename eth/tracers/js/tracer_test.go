@@ -33,11 +33,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/core/vm"
-	"github.com/ava-labs/subnet-evm/eth/tracers"
-	"github.com/ava-labs/subnet-evm/params"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/core/vm"
+	"github.com/gattaca-com/oracle-evm/eth/tracers"
+	"github.com/gattaca-com/oracle-evm/params"
 )
 
 type account struct{}

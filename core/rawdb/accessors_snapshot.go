@@ -27,9 +27,9 @@
 package rawdb
 
 import (
-	"github.com/ava-labs/subnet-evm/ethdb"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/ethdb"
 )
 
 // ReadSnapshotRoot retrieves the root of the block whose state is contained in

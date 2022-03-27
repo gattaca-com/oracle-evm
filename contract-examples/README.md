@@ -31,7 +31,7 @@ It is also helpful to have a basic understanding of [Solidity](https://docs.soli
 Clone the repo and install the necessary packages via `yarn`.
 
 ```zsh
-$ git clone https://github.com/ava-labs/subnet-evm.git
+$ git clone https://github.com/gattaca-com/oracle-evm.git
 $ cd smart-contract-examples
 $ yarn
 ```
@@ -44,7 +44,7 @@ $ yarn
 
 Both of these `NativeMinter` and `AllowList` should be enabled by a chain config in genesis or as an upgrade. See the example genesis under [Tests](#tests) section.
 
-For more information about precompiles see [subnet-evm precompiles](https://github.com/ava-labs/subnet-evm#precompiles).
+For more information about precompiles see [subnet-evm precompiles](https://github.com/gattaca-com/oracle-evm#precompiles).
 
 ## Hardhat Config
 

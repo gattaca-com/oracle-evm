@@ -14,24 +14,24 @@ import (
 	"sync"
 	"time"
 
-	subnetEVM "github.com/ava-labs/subnet-evm/chain"
-	"github.com/ava-labs/subnet-evm/constants"
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/eth/ethconfig"
-	"github.com/ava-labs/subnet-evm/metrics/prometheus"
-	"github.com/ava-labs/subnet-evm/node"
-	"github.com/ava-labs/subnet-evm/params"
-	"github.com/ava-labs/subnet-evm/peer"
-	"github.com/ava-labs/subnet-evm/plugin/evm/message"
+	subnetEVM "github.com/gattaca-com/oracle-evm/chain"
+	"github.com/gattaca-com/oracle-evm/constants"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/eth/ethconfig"
+	"github.com/gattaca-com/oracle-evm/metrics/prometheus"
+	"github.com/gattaca-com/oracle-evm/node"
+	"github.com/gattaca-com/oracle-evm/params"
+	"github.com/gattaca-com/oracle-evm/peer"
+	"github.com/gattaca-com/oracle-evm/plugin/evm/message"
 
 	// Force-load tracer engine to trigger registration
 	//
 	// We must import this package (not referenced elsewhere) so that the native "callTracer"
 	// is added to a map of client-accessible tracers. In geth, this is done
 	// inside of cmd/geth.
-	_ "github.com/ava-labs/subnet-evm/eth/tracers/js"
-	_ "github.com/ava-labs/subnet-evm/eth/tracers/native"
+	_ "github.com/gattaca-com/oracle-evm/eth/tracers/js"
+	_ "github.com/gattaca-com/oracle-evm/eth/tracers/native"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
@@ -61,7 +61,7 @@ import (
 	avalancheJSON "github.com/ava-labs/avalanchego/utils/json"
 
 	"github.com/gagliardetto/solana-go"
-	"github.com/gattca/oracle-price-streamer/streamer"
+	"github.com/gattaca-com/OraclePriceStreamer/streamer"
 )
 
 var (

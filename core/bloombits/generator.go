@@ -29,7 +29,7 @@ package bloombits
 import (
 	"errors"
 
-	"github.com/ava-labs/subnet-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/core/types"
 )
 
 var (

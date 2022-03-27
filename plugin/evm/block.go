@@ -11,7 +11,7 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
 
-	"github.com/ava-labs/subnet-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/core/types"
 
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/snow/choices"
@@ -100,17 +100,16 @@ func (b *Block) verifyPrices() error {
 	blockPrices := b.ethBlock.GetPrices()
 
 	if blockPrices != nil {
-		
+
 		for _, price := range blockPrices {
-			if ! b.vm.PythStreamer.IsValidPrice(price) {
-				return fmt.Errorf("Block contains invalid price %s", price.Symbol )
+			if !b.vm.PythStreamer.IsValidPrice(price) {
+				return fmt.Errorf("Block contains invalid price %s", price.Symbol)
 			}
-		}	 
+		}
 
 	} else {
 		return fmt.Errorf("Block doesn not contain any prices")
 	}
-	
 
 	return nil
 

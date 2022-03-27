@@ -14,8 +14,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/core/types"
 
 	"github.com/ethereum/go-ethereum/log"
 )
@@ -29,7 +29,7 @@ func TestCounter(t *testing.T) {
 
 	// NOTE: use precompiled `counter.sol` for portability, do not remove the
 	// following code (for debug purpose)
-	// counterSrc, err := filepath.Abs(gopath + "/src/github.com/ava-labs/subnet-evm/examples/counter/counter.sol")
+	// counterSrc, err := filepath.Abs(gopath + "/src/github.com/gattaca-com/oracle-evm/examples/counter/counter.sol")
 	// if err != nil {
 	// 	t.Fatal(err)
 	// }

@@ -29,8 +29,8 @@ package eth
 import (
 	"time"
 
-	"github.com/ava-labs/subnet-evm/core/rawdb"
 	"github.com/ethereum/go-ethereum/common/bitutil"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
 )
 
 const (

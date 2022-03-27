@@ -30,7 +30,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/ava-labs/subnet-evm/params"
+	"github.com/gattaca-com/oracle-evm/params"
 	"github.com/holiman/uint256"
 )
 

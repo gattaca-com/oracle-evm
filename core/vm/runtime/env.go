@@ -27,8 +27,8 @@
 package runtime
 
 import (
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/vm"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/vm"
 )
 
 func NewEnv(cfg *Config) *vm.EVM {

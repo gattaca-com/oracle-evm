@@ -33,12 +33,12 @@ import (
 	"runtime"
 	"runtime/debug"
 
-	"github.com/ava-labs/subnet-evm/core/types"
-	"github.com/ava-labs/subnet-evm/ethclient"
-	"github.com/ava-labs/subnet-evm/interfaces"
-	"github.com/ava-labs/subnet-evm/rpc"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/gattaca-com/oracle-evm/core/types"
+	"github.com/gattaca-com/oracle-evm/ethclient"
+	"github.com/gattaca-com/oracle-evm/interfaces"
+	"github.com/gattaca-com/oracle-evm/rpc"
 )
 
 // Client is a wrapper around rpc.Client that implements geth-specific functionality.

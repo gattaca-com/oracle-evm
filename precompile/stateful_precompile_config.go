@@ -8,7 +8,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
-	"github.com/ava-labs/subnet-evm/utils"
+	"github.com/gattaca-com/oracle-evm/utils"
 )
 
 // StatefulPrecompileConfig defines the interface for a stateful precompile to

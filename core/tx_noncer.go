@@ -29,8 +29,8 @@ package core
 import (
 	"sync"
 
-	"github.com/ava-labs/subnet-evm/core/state"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/core/state"
 )
 
 // txNoncer is a tiny virtual state database to manage the executable nonces of

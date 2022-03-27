@@ -35,10 +35,10 @@ import (
 	"io"
 	"sync"
 
-	"github.com/ava-labs/subnet-evm/ethdb"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/gattaca-com/oracle-evm/ethdb"
 )
 
 var ErrCommitDisabled = errors.New("no database for committing")

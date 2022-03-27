@@ -45,8 +45,8 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/ava-labs/subnet-evm/core"
 	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/gattaca-com/oracle-evm/core"
 )
 
 type allocItem struct{ Addr, Balance *big.Int }

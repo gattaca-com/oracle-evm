@@ -27,7 +27,7 @@
 package vm
 
 import (
-	"github.com/ava-labs/subnet-evm/vmerrs"
+	"github.com/gattaca-com/oracle-evm/vmerrs"
 	"github.com/holiman/uint256"
 )
 

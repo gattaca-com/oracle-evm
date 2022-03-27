@@ -20,7 +20,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "repository": "https://github.com/ava-labs/subnet-evm-contracts",
+  "repository": "https://github.com/gattaca-com/oracle-evm-contracts",
   "license": "BSD-3-Clause",
   "scripts": {
     "compile": "npx hardhat compile",

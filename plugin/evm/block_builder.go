@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	subnetEVM "github.com/ava-labs/subnet-evm/chain"
-	"github.com/ava-labs/subnet-evm/params"
+	subnetEVM "github.com/gattaca-com/oracle-evm/chain"
+	"github.com/gattaca-com/oracle-evm/params"
 
 	"github.com/ava-labs/avalanchego/snow"
 	commonEng "github.com/ava-labs/avalanchego/snow/engine/common"

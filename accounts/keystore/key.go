@@ -39,9 +39,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ava-labs/subnet-evm/accounts"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/gattaca-com/oracle-evm/accounts"
 	"github.com/google/uuid"
 )
 

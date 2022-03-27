@@ -38,14 +38,14 @@ import (
 	"unicode"
 	"unsafe"
 
-	"github.com/ava-labs/subnet-evm/core"
-	"github.com/ava-labs/subnet-evm/core/vm"
-	tracers2 "github.com/ava-labs/subnet-evm/eth/tracers"
-	"github.com/ava-labs/subnet-evm/eth/tracers/js/internal/tracers"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/core"
+	"github.com/gattaca-com/oracle-evm/core/vm"
+	tracers2 "github.com/gattaca-com/oracle-evm/eth/tracers"
+	"github.com/gattaca-com/oracle-evm/eth/tracers/js/internal/tracers"
 	"gopkg.in/olebedev/go-duktape.v3"
 )
 

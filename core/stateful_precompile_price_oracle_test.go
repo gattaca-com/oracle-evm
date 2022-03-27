@@ -5,11 +5,11 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ava-labs/subnet-evm/core/rawdb"
-	"github.com/ava-labs/subnet-evm/core/state"
-	"github.com/ava-labs/subnet-evm/precompile"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/gattca/oracle-price-streamer/streamer"
+	"github.com/gattaca-com/OraclePriceStreamer/streamer"
+	"github.com/gattaca-com/oracle-evm/core/rawdb"
+	"github.com/gattaca-com/oracle-evm/core/state"
+	"github.com/gattaca-com/oracle-evm/precompile"
 )
 
 type TestPrecompileAccessibleState struct {
@@ -24,7 +24,6 @@ func (t TestPrecompileAccessibleState) BlockTime() *big.Int {
 	return big.NewInt(0)
 }
 
-
 func TestPriceOracleSetAndGetPrice(t *testing.T) {
 	db := rawdb.NewMemoryDatabase()
 	stateDb, err := state.New(common.Hash{}, state.NewDatabase(db), nil)
@@ -35,9 +34,9 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 	contract := precompile.CreateNativeGetPriceerPrecompile(precompile.PriceOracleAddress)
 
 	sampleBtcAvaxVal := streamer.Price{
-		Price: 10000,
-		Slot: 12000,
-		Symbol: "AVAX/USD",
+		Price:    10000,
+		Slot:     12000,
+		Symbol:   "AVAX/USD",
 		Decimals: 8,
 	}
 
@@ -72,7 +71,7 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 	}
 
 	fmt.Printf("Returned Price: %d", price)
-	
+
 	// if reflect.DeepEqual(returnedPrice.Symbol, sampleBtcAvaxVal.Symbol) {
 
 	// }

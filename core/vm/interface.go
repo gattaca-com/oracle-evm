@@ -29,8 +29,8 @@ package vm
 import (
 	"math/big"
 
-	"github.com/ava-labs/subnet-evm/core/types"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/gattaca-com/oracle-evm/core/types"
 )
 
 // StateDB is an EVM database for full state querying.

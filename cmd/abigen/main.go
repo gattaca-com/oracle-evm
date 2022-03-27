@@ -35,13 +35,13 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ava-labs/subnet-evm/accounts/abi"
-	"github.com/ava-labs/subnet-evm/accounts/abi/bind"
-	"github.com/ava-labs/subnet-evm/internal/flags"
 	"github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/common/compiler"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/log"
+	"github.com/gattaca-com/oracle-evm/accounts/abi"
+	"github.com/gattaca-com/oracle-evm/accounts/abi/bind"
+	"github.com/gattaca-com/oracle-evm/internal/flags"
 	"gopkg.in/urfave/cli.v1"
 )
 
