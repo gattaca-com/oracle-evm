@@ -134,15 +134,11 @@ func (self *ETHChain) SetPreference(block *types.Block) error {
 // this function may trigger a reorg if the block being accepted is not in the
 // canonical chain.
 func (self *ETHChain) Accept(block *types.Block) error {
-	// GATTACA TODO do price data intgrity checks
-	
 	return self.BlockChain().Accept(block)
 }
 
 // Reject tells the chain that [block] has been rejected.
 func (self *ETHChain) Reject(block *types.Block) error {
-	// GATTACA TODO do price data intgrity checks
-
 	return self.BlockChain().Reject(block)
 }
 

@@ -21,9 +21,8 @@ var (
 	PriceOraclePreCompile StatefulPrecompiledContract = CreateNativeGetPriceerPrecompile(PriceOracleAddress)
 
 	// TODO perhaps put in a method to
-	getPriceSignature = CalculateFunctionSelector("getPrice(uint256)")         // Hashed value of key (e.g. keccak256(btc/eth)) )
-	getDecimalsSignature = CalculateFunctionSelector("getDecimals(uint256)")         // Hashed value of key (e.g. keccak256(btc/eth)) )
-	
+	getPriceSignature    = CalculateFunctionSelector("getPrice(uint256)")    // Hashed value of key (e.g. keccak256(btc/eth)) )
+	getDecimalsSignature = CalculateFunctionSelector("getDecimals(uint256)") // Hashed value of key (e.g. keccak256(btc/eth)) )
 
 	ErrCannotGetPrice = errors.New("non-enabled cannot GetPrice")
 
@@ -68,9 +67,9 @@ func (c *PriceOracleConfig) Configure(state StateDB) {
 	}
 
 	sampleBtcAvaxVal := streamer.Price{
-		Price: 10000,
-		Slot: 12000,
-		Symbol: "AVAX/USD",
+		Price:    10000,
+		Slot:     12000,
+		Symbol:   "AVAX/USD",
 		Decimals: 8,
 	}
 
@@ -88,8 +87,6 @@ func (c *PriceOracleConfig) Timestamp() *big.Int {
 	// return big.NewInt(time.Now().AddDate(-1, 0, 0).UnixMilli())
 	// return c.BlockTimestamp
 }
-
-// TODO PRETTIFY
 
 func WritePriceToState(state StateDB, price *streamer.Price) error {
 
@@ -130,7 +127,6 @@ func UnpackGetPriceInput(input []byte) (*PriceFeedId, error) {
 	return &identifier, nil
 }
 
-
 func getPriceStruct(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (price *streamer.Price, remainingGas uint64, err error) {
 	if remainingGas, err = deductGas(suppliedGas, GetPriceGasCost); err != nil {
 		return nil, 0, err
@@ -155,14 +151,16 @@ func getPriceStruct(accessibleState PrecompileAccessibleState, caller common.Add
 	priceStructHash := stateDB.GetState(addr, common.Hash(*identifier))
 	priceStruct, _ := streamer.UnmarshallPrice(priceStructHash.Bytes())
 
-	
 	return priceStruct, remainingGas, nil
 }
 
-
 func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
 
-	priceStruct, remainingGas, err  := getPriceStruct(accessibleState, caller, addr, input, suppliedGas, readOnly)
+	priceStruct, remainingGas, err := getPriceStruct(accessibleState, caller, addr, input, suppliedGas, readOnly)
+	if err != nil {
+		return nil, remainingGas, err
+	}
+
 	price := big.NewInt(priceStruct.Price)
 	// Return an empty output and the remaining gas
 	return common.BigToHash(price).Bytes(), remainingGas, nil
@@ -170,39 +168,15 @@ func getPrice(accessibleState PrecompileAccessibleState, caller common.Address, 
 
 func getDecimals(accessibleState PrecompileAccessibleState, caller common.Address, addr common.Address, input []byte, suppliedGas uint64, readOnly bool) (ret []byte, remainingGas uint64, err error) {
 
-	priceStruct, remainingGas, err  := getPriceStruct(accessibleState, caller, addr, input, suppliedGas, readOnly)
+	priceStruct, remainingGas, err := getPriceStruct(accessibleState, caller, addr, input, suppliedGas, readOnly)
+	if err != nil {
+		return nil, remainingGas, err
+	}
+
 	decimals := big.NewInt(int64(priceStruct.Decimals))
 	// Return an empty output and the remaining gas
 	return common.BigToHash(decimals).Bytes(), remainingGas, nil
 }
-
-/*
-*
-* Set Price Functionality Below
- */
-
-// // PackGetPriceInput packs [address] and [amount] into the appropriate arguments for GetPriceing operation.
-// func PackSetPriceInput(identifier PriceFeedId, price *streamer.Price) ([]byte, error) {
-// 	priceByte, err := streamer.MarshallPrice(price)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	priceLength := len(priceByte)
-
-// 	if priceLength > 32 {
-// 		return nil, fmt.Errorf("error Packing price. lenght of full price was larger than 32 bytes!. Total Lenth: %d", priceLength)
-// 	}
-
-// 	// function selector (4 bytes) + input(hash for address + hash for amount)
-// 	fullLen := selectorLen + SetPriceInputLen
-// 	input := make([]byte, fullLen)
-// 	copy(input[:selectorLen], setPriceSignature)
-// 	copy(input[selectorLen:selectorLen+common.HashLength], identifier.Bytes())
-// 	copy(input[fullLen-common.HashLength:], priceByte)
-// 	return input, nil
-// }
-
 
 // createNativeGetPriceerPrecompile returns a StatefulPrecompiledContract with R/W control of an allow list at [precompileAddr] and a native coin GetPriceer.
 func CreateNativeGetPriceerPrecompile(precompileAddr common.Address) StatefulPrecompiledContract {

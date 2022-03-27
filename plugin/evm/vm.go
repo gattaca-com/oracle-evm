@@ -304,6 +304,23 @@ func (vm *VM) Initialize(
 		InsecureUnlockAllowed: vm.config.KeystoreInsecureUnlockAllowed,
 	}
 
+	AvaxKey := solana.MustPublicKeyFromBase58("DDdPuysfkxPq5Y1ZtTSk1H5n7iBKc9wtEKUwd1TNu3Gc")
+
+	OracleConfig := struct {
+		FeedWebSockUrl string
+		FeedHttpUrl    string
+		Streams        map[solana.PublicKey]streamer.PythProduct
+	}{
+		"wss://api.devnet.solana.com",
+		"https://api.devnet.solana.com",
+		map[solana.PublicKey]streamer.PythProduct{
+			AvaxKey: {
+				Symbol: "AVAX/USD",
+				Key:    AvaxKey,
+			},
+		},
+	}
+
 	// Attempt to load last accepted block to determine if it is necessary to
 	// initialize state with the genesis block.
 	lastAcceptedBytes, lastAcceptedErr := vm.acceptedBlockDB.Get(lastAcceptedKey)
@@ -321,16 +338,7 @@ func (vm *VM) Initialize(
 	}
 
 	// ###################### Gattaca Mod. initialize pyth streamer ##############################
-	// UGLY HARD CODED FOR NOW
-	var testRPC = "https://api.devnet.solana.com"
-	var testWS = "wss://api.devnet.solana.com"
-	avaxKey := solana.MustPublicKeyFromBase58("DDdPuysfkxPq5Y1ZtTSk1H5n7iBKc9wtEKUwd1TNu3Gc")
-	products := make(map[solana.PublicKey]streamer.PythProduct)
-	products[avaxKey] = streamer.PythProduct{
-		Symbol: "AVAX/USD",
-		Key:    avaxKey,
-	}
-	pythStreamer := streamer.NewPythStreamer(products, testRPC, testWS)
+	pythStreamer := streamer.NewPythStreamer(OracleConfig.Streams, OracleConfig.FeedHttpUrl, OracleConfig.FeedWebSockUrl)
 	vm.PythStreamer = *pythStreamer
 
 	go vm.PythStreamer.StreamProducts()

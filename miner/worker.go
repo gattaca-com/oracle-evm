@@ -180,7 +180,7 @@ func (w *worker) commitNewWork(oraclePrices []byte) (*types.Block, error) {
 		}
 	}
 
-	// Commit prices to state
+	////////////// GATTACA MOD - Commit prices to state //////
 	prices, err := streamer.BytesToPrices(header.Prices)
 	if err != nil {
 		return nil, err
@@ -192,6 +192,7 @@ func (w *worker) commitNewWork(oraclePrices []byte) (*types.Block, error) {
 			return nil, err
 		}
 	}
+	/////////////////////////////////////////////////////////
 
 	if len(localTxs) > 0 {
 		txs := types.NewTransactionsByPriceAndNonce(env.signer, localTxs, header.BaseFee)

@@ -81,12 +81,9 @@ func (p *StateProcessor) Process(block *types.Block, parent *types.Header, state
 	// Configure any stateful precompiles that should go into effect during this block.
 	p.config.CheckConfigurePrecompiles(new(big.Int).SetUint64(parent.Time), timestamp, statedb)
 
-	// GATTACA MOD - write prices from block header to stateDB
+	// write prices from block header to stateDB
 	prices := block.GetPrices()
 	for _, price := range prices {
-
-		//TODO
-		fmt.Printf("Write this price to the state db: '%s'\n", price.Symbol)
 		precompile.WritePriceToState(statedb, price)
 	}
 

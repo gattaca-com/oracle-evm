@@ -72,11 +72,7 @@ func TestPriceOracleSetAndGetPrice(t *testing.T) {
 
 	fmt.Printf("Returned Price: %d", price)
 
-	// if reflect.DeepEqual(returnedPrice.Symbol, sampleBtcAvaxVal.Symbol) {
-
-	// }
-
 	if price.Int64() != sampleBtcAvaxVal.Price {
-		t.Errorf("Data was not stored or retreived correctly.\nExpected %+v. Returned %+v", price, sampleBtcAvaxVal)
+		t.Errorf("Data was not stored or retreived correctly.\nExpected %+v. Returned %+v", price, sampleBtcAvaxVal.Price)
 	}
 }
