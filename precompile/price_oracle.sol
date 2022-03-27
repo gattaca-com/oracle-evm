@@ -6,3 +6,11 @@ interface NativePriceOracleInterface {
 
     function getDecimals(uint256 identifier) external view returns (uint256);
 }
+
+
+
+
+
+
+
+
